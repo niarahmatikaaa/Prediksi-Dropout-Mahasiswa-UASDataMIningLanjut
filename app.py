@@ -795,10 +795,36 @@ else:
 
     # ── FORM INPUT ──
     if st.session_state.page == "input":
-        st.markdown("""<div style="margin-bottom:22px;">
-            <h2 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#0D1117;margin:0 0 4px 0;letter-spacing:-0.4px;">Form Evaluasi Mahasiswa</h2>
-            <p style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:#64748B;margin:0;">Isi data di bawah untuk memproses prediksi risiko dropout mahasiswa.</p>
-        </div>""", unsafe_allow_html=True)
+        st.markdown("""
+<style>
+
+/* Input box */
+.stTextInput input {
+    background-color: transparent !important;
+    color: inherit !important;              /* ikut theme */
+    caret-color: currentColor !important;  /* cursor ikut warna text */
+}
+
+/* Placeholder */
+.stTextInput input::placeholder {
+    color: rgba(120,120,120,0.7) !important;
+}
+
+/* Border input */
+div[data-baseweb="input"] {
+    border: 1px solid rgba(120,120,120,0.35) !important;
+    border-radius: 14px !important;
+    background: rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(8px);
+}
+
+/* Label */
+label {
+    color: inherit !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
         with st.form("input_form"):
             with st.container(border=True):

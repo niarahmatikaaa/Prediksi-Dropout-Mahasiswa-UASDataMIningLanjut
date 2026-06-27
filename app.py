@@ -17,7 +17,8 @@ from docx.oxml import OxmlElement
 # ==========================================
 st.set_page_config(
     page_title="Portal Akademik",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="collapsed"
 )
 
 # ==========================================
@@ -46,105 +47,80 @@ CLOSE_ICON     = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill
 st.markdown("""
 <style>
 
-/* ===== ROOT COLOR AUTO ADAPT ===== */
-:root {
-    --bg-light: #ffffff;
-    --bg-dark: #0E1117;
-    --text-light: #111827;
-    --text-dark: #F9FAFB;
-    --input-light: #ffffff;
-    --input-dark: #1F2937;
-    --border-light: #D1D5DB;
-    --border-dark: #374151;
+/* ROOT */
+:root{
+    --bg:#ffffff;
+    --text:#111827;
+    --card:#ffffff;
+    --input:#ffffff;
+    --border:#d1d5db;
 }
 
-/* ===== APP BACKGROUND ===== */
-.stApp {
-    background-color: var(--bg-light);
-    color: var(--text-light);
-}
-
-/* DARK MODE SUPPORT */
-@media (prefers-color-scheme: dark) {
-    .stApp {
-        background-color: var(--bg-dark);
-        color: var(--text-dark);
+@media (prefers-color-scheme: dark){
+    :root{
+        --bg:#0e1117;
+        --text:#f9fafb;
+        --card:#111827;
+        --input:#1f2937;
+        --border:#374151;
     }
 }
 
-/* ===== INPUT FIELD FIX ===== */
-input, textarea {
-    color: inherit !important;
-    background: inherit !important;
+/* APP */
+.stApp{
+    background:var(--bg)!important;
+    color:var(--text)!important;
 }
 
+/* CONTENT */
+.main .block-container{
+    padding-top:1rem !important;
+}
+
+/* INPUT */
 .stTextInput input,
-.stNumberInput input {
-    color: #111827 !important;
-    background-color: #ffffff !important;
-    border: 2px solid #D1D5DB !important;
+.stNumberInput input{
+    background:var(--input)!important;
+    color:var(--text)!important;
+    border:2px solid var(--border)!important;
+    border-radius:12px !important;
 }
 
-@media (prefers-color-scheme: dark) {
-    .stTextInput input,
-    .stNumberInput input {
-        color: #F9FAFB !important;
-        background-color: #1F2937 !important;
-        border: 2px solid #374151 !important;
-    }
-}
-
-/* Placeholder */
+/* PLACEHOLDER */
 .stTextInput input::placeholder,
-.stNumberInput input::placeholder {
-    color: #9CA3AF !important;
+.stNumberInput input::placeholder{
+    color:#9ca3af!important;
 }
 
-/* ===== SELECTBOX ===== */
-.stSelectbox div[data-baseweb="select"] {
-    color: inherit !important;
+/* SELECT */
+div[data-baseweb="select"] > div{
+    background:var(--input)!important;
+    color:var(--text)!important;
+    border:2px solid var(--border)!important;
 }
 
-/* ===== SIDEBAR FIX ===== */
-section[data-testid="stSidebar"] {
-    width: 280px !important;
-    min-width: 280px !important;
+/* LABEL */
+label, p, h1, h2, h3, h4, h5, h6, span{
+    color:var(--text)!important;
 }
 
-/* Content geser biar gak ketiban sidebar */
-.main .block-container {
-    padding-left: 2rem !important;
-    padding-right: 2rem !important;
-    max-width: 100% !important;
+/* BUTTON */
+.stButton button{
+    width:100%;
+    border-radius:12px;
 }
 
-/* ===== MENU RESPONSIVE ===== */
-@media (max-width: 768px) {
-    section[data-testid="stSidebar"] {
-        width: 100% !important;
+/* CHART WHITE BG */
+canvas{
+    background:#ffffff !important;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .main .block-container{
+        padding-left:1rem!important;
+        padding-right:1rem!important;
     }
-
-    .main .block-container {
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
-    }
-}
-
-/* ===== CHART TEXT FIX ===== */
-svg text {
-    fill: currentColor !important;
-}
-
-/* ===== BUTTON ===== */
-.stButton button {
-    width: 100%;
-    border-radius: 12px;
-    font-weight: bold;
-}
-
-/* ===== REMOVE LEFT EMPTY SPACE BUG ===== */
-[data-testid="collapsedControl"] {
-    display: block !important;
 }
 
 </style>
@@ -821,10 +797,10 @@ elif st.session_state.page == "log":
                 f'color:#0D1117;margin-bottom:8px;">'
                 f'{BARCHART_ICON.format(size=13,color="#3B5BDB")} &nbsp;Fluktuasi IPK per Semester</div>',
                 unsafe_allow_html=True)
-            st.line_chart(
-                pd.DataFrame({"IPK":[active_data["IPK1"],active_data["IPK2"]]},
-                             index=["Semester 1","Semester 2"]),
-                height=165, use_container_width=True)
+            st.image(
+    make_ipk_chart(active_data["IPK1"], active_data["IPK2"]),
+    use_container_width=True
+)
 
         with pr:
             st.markdown(

@@ -46,6 +46,16 @@ CLOSE_ICON     = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill
 # ==========================================
 st.markdown("""
 <style>
+            /* HIDE PRESS ENTER TO SUBMIT */
+div[data-testid="InputInstructions"]{
+    display:none !important;
+}
+
+/* FIX NUMBER INPUT */
+[data-testid="stNumberInput"] button{
+    min-height:42px !important;
+}
+            
 
 /* ROOT */
 :root{

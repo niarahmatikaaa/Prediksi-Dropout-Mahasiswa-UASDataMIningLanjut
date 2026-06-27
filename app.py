@@ -7,14 +7,8 @@ import base64
 
 import matplotlib
 matplotlib.use("Agg")
-
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 
-from docx import Document as DocxDocument
-from docx.shared import Inches, Pt, RGBColor, Cm
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_ALIGN_VERTICAL, WD_TABLE_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
@@ -43,204 +37,316 @@ ZAPPER_ICON    = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill
 BULB_ICON      = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="18" x2="15" y2="18"/><line x1="10" y1="22" x2="14" y2="22"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>"""
 USER_ICON      = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>"""
 DOWNLOAD_ICON  = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>"""
-SHIELD_ICON    = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>"""
 PRINT_ICON     = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>"""
+MENU_ICON      = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>"""
+CLOSE_ICON     = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="{color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>"""
 
 # ==========================================
-# 3. CSS — MOBILE-FIRST FIXED
+# 3. CSS — FORCE LIGHT MODE, SIDEBAR MENU
 # ==========================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
 
+/* ══════════════════════════════════════════
+   FORCE LIGHT MODE — override dark/auto theme
+   tulisan, input, background semuanya eksplisit
+   ══════════════════════════════════════════ */
 :root {
-    --ink:#0D1117; --ink-2:#1C2333; --muted:#64748B; --muted-2:#94A3B8;
-    --paper:#F0F4FA; --surface:#FFFFFF;
-    --blue:#3B5BDB; --blue-dark:#2F4AC0; --blue-bg:#EEF2FF;
-    --violet:#7048E8; --violet-bg:#F3F0FF;
-    --safe:#0D9488; --safe-bg:#CCFBF1;
-    --risk:#DC2626; --risk-bg:#FEE2E2;
-    --amber:#D97706; --amber-bg:#FEF3C7;
-    --hairline:#E2E8F0; --radius:16px;
+    color-scheme: light only !important;
+    --ink:#0D1117;
+    --ink-2:#1C2333;
+    --muted:#64748B;
+    --muted-2:#94A3B8;
+    --paper:#F0F4FA;
+    --surface:#FFFFFF;
+    --blue:#3B5BDB;
+    --blue-dark:#2F4AC0;
+    --blue-bg:#EEF2FF;
+    --violet:#7048E8;
+    --violet-bg:#F3F0FF;
+    --safe:#0D9488;
+    --safe-bg:#CCFBF1;
+    --risk:#DC2626;
+    --risk-bg:#FEE2E2;
+    --amber:#D97706;
+    --amber-bg:#FEF3C7;
+    --hairline:#E2E8F0;
     --font-head:'Space Grotesk',sans-serif;
     --font-body:'Plus Jakarta Sans',sans-serif;
     --font-code:'Fira Code',monospace;
 }
-html,body,[class*="css"]{font-family:var(--font-body)!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
-.stApp{background-color:var(--paper);}
-header[data-testid="stHeader"]{height:0;visibility:hidden;}
-div[data-testid="stDecoration"]{display:none;}
-footer{visibility:hidden;}
-#MainMenu{visibility:hidden;}
-.block-container{
-    padding-top:1rem!important;
-    padding-bottom:3rem!important;
-    padding-left:1.2rem!important;
-    padding-right:1.2rem!important;
-    max-width:100%!important;
-}
-@media(min-width:768px){
-    .block-container{padding-left:2.4rem!important;padding-right:2.4rem!important;}
+
+/* Force light background & dark text globally */
+html, body, [class*="css"], .stApp, .main, [data-testid="stAppViewContainer"] {
+    background-color: #F0F4FA !important;
+    color: #0D1117 !important;
+    color-scheme: light !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    -webkit-font-smoothing: antialiased !important;
 }
 
-/* ── Sembunyikan "Press Enter to submit" ── */
-[data-testid="InputInstructions"]{
-    display:none!important;visibility:hidden!important;height:0!important;overflow:hidden!important;
+/* ── SIDEBAR MENU STYLING ── */
+[data-testid="stSidebar"] {
+    background-color: #FFFFFF !important;
+    border-right: 1.5px solid #E2E8F0 !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+}
+[data-testid="stSidebar"] * {
+    color: #0D1117 !important;
+}
+[data-testid="stSidebarNav"] { display: none !important; }
+
+/* Sidebar toggle button */
+[data-testid="collapsedControl"] {
+    background: linear-gradient(135deg, #3B5BDB, #7048E8) !important;
+    border-radius: 10px !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 4px 14px rgba(59,91,219,0.3) !important;
+}
+[data-testid="collapsedControl"] svg {
+    stroke: #fff !important;
+    fill: #fff !important;
 }
 
 /* ── TOPBAR ── */
-.st-key-topbar{
-    position:fixed!important;top:0;left:0;right:0;z-index:999999;
-    background:rgba(255,255,255,0.94);
-    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-    border-bottom:1.5px solid var(--hairline);
-    box-shadow:0 1px 16px rgba(15,23,42,0.05);
-    padding:10px 1.2rem!important;
-}
-@media(min-width:768px){
-    .st-key-topbar{padding:10px 2.4rem!important;}
-}
-
-/* ── POPOVER BUTTON ── */
-div[data-testid="stPopover"] button{
-    background:var(--blue-bg)!important;
-    border:1.5px solid #c5d0fa!important;
-    border-radius:10px!important;
-    color:var(--blue)!important;
-    font-weight:600!important;
-    font-family:var(--font-body)!important;
-}
-div[data-testid="stPopover"] button:hover{background:#dde4ff!important;}
-div[data-testid="stPopover"] button p{color:var(--blue)!important;font-family:var(--font-body)!important;}
-
-/* ══════════════════════════════════════
-   POPOVER MENU — FIX MOBILE DUPLIKAT
-   Sembunyikan tombol Streamlit asli
-   (yang muncul dobel di bawah card HTML)
-   biarkan hanya card HTML custom yg terlihat
-   ══════════════════════════════════════ */
-div[data-testid="stPopover"] [data-testid="stVerticalBlock"] > div > div[data-testid="stVerticalBlock"] .stButton > button {
-    /* sembunyikan tombol teks bawaan streamlit */
-    position:absolute!important;
-    opacity:0!important;
-    height:0!important;
-    min-height:0!important;
-    padding:0!important;
-    margin:0!important;
-    border:none!important;
-    overflow:hidden!important;
-    pointer-events:auto!important;
-    width:100%!important;
-    top:0;left:0;
-}
-div[data-testid="stPopover"] [data-testid="stVerticalBlock"] > div > div[data-testid="stVerticalBlock"] .stButton {
-    position:relative!important;
-    /* tarik ke atas agar overlap dengan card HTML di atasnya */
-    margin-top:-52px!important;
-    z-index:10!important;
+.st-key-topbar {
+    position: fixed !important;
+    top: 0; left: 0; right: 0;
+    z-index: 99999;
+    background: rgba(255,255,255,0.97) !important;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1.5px solid #E2E8F0 !important;
+    box-shadow: 0 1px 16px rgba(15,23,42,0.06) !important;
+    padding: 10px 2.4rem !important;
 }
 
-/* Popover body container */
-div[data-testid="stPopoverBody"],
-div[data-testid="stPopover"] > div[data-testid="stPopoverBody"]{
-    min-width:260px!important;
-    border-radius:18px!important;
-    border:1.5px solid #E2E8F0!important;
-    box-shadow:0 8px 32px rgba(15,23,42,0.12)!important;
-    padding:16px!important;
+header[data-testid="stHeader"] { height:0; visibility:hidden; }
+div[data-testid="stDecoration"] { display:none; }
+footer { visibility:hidden; }
+#MainMenu { visibility:hidden; }
+
+.block-container {
+    padding-top: 1rem !important;
+    padding-bottom: 3rem !important;
+    padding-left: 2.4rem !important;
+    padding-right: 2.4rem !important;
+    max-width: 100% !important;
+}
+@media(max-width: 768px) {
+    .block-container {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 }
 
 /* ── SECTION LABEL ── */
-.section-label{
-    font-family:var(--font-code)!important;font-size:10.5px;font-weight:600;
-    color:var(--blue);text-transform:uppercase;letter-spacing:1.4px;
-    border-left:3px solid var(--blue);padding-left:10px;margin:4px 0 18px 0;
-    display:flex;align-items:center;gap:8px;
+.section-label {
+    font-family: 'Fira Code', monospace !important;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #3B5BDB;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    border-left: 3px solid #3B5BDB;
+    padding-left: 10px;
+    margin: 4px 0 18px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 /* ── CARD BORDER ── */
-div[data-testid="stVerticalBlockBorderWrapper"]{
-    background:#ffffff!important;border-radius:20px!important;
-    border:1.5px solid var(--hairline)!important;
-    box-shadow:0 2px 16px rgba(15,23,42,0.05)!important;
+div[data-testid="stVerticalBlockBorderWrapper"] {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    border: 1.5px solid #E2E8F0 !important;
+    box-shadow: 0 2px 16px rgba(15,23,42,0.05) !important;
 }
 
-/* ── INPUTS ── */
-.stTextInput input,.stNumberInput input{
-    padding:10px 14px!important;font-size:14px!important;
-    font-family:var(--font-body)!important;border-radius:10px!important;
-    border:1.5px solid var(--hairline)!important;background:#F8FAFC!important;
-    transition:border-color .18s,box-shadow .18s;
+/* ══════════════════════════════════════════
+   INPUT — FORCE warna teks & background
+   agar tidak ikut dark mode browser/OS
+   ══════════════════════════════════════════ */
+.stTextInput input,
+.stNumberInput input,
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+    color: #0D1117 !important;
+    background-color: #F8FAFC !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 10px !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    caret-color: #0D1117 !important;
+    -webkit-text-fill-color: #0D1117 !important;
 }
-.stTextInput input:focus,.stNumberInput input:focus{
-    border-color:var(--blue)!important;
-    box-shadow:0 0 0 3px rgba(59,91,219,0.09)!important;background:#fff!important;
+.stTextInput input:focus,
+.stNumberInput input:focus {
+    border-color: #3B5BDB !important;
+    box-shadow: 0 0 0 3px rgba(59,91,219,0.10) !important;
+    background-color: #ffffff !important;
+    -webkit-text-fill-color: #0D1117 !important;
 }
-.stSelectbox div[data-baseweb="select"]>div{
-    border-radius:10px!important;border:1.5px solid var(--hairline)!important;
-    min-height:42px!important;background:#F8FAFC!important;font-family:var(--font-body)!important;
+.stTextInput input::placeholder,
+.stNumberInput input::placeholder {
+    color: #94A3B8 !important;
+    -webkit-text-fill-color: #94A3B8 !important;
+    opacity: 1 !important;
 }
-.stTextInput label,.stNumberInput label,.stSelectbox label{
-    font-size:13px!important;font-weight:600!important;
-    font-family:var(--font-body)!important;color:var(--ink)!important;
+/* Label input */
+.stTextInput label,
+.stNumberInput label,
+.stSelectbox label,
+label {
+    color: #0D1117 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+}
+
+/* Selectbox */
+.stSelectbox div[data-baseweb="select"] > div {
+    border-radius: 10px !important;
+    border: 1.5px solid #E2E8F0 !important;
+    min-height: 42px !important;
+    background-color: #F8FAFC !important;
+    color: #0D1117 !important;
+}
+.stSelectbox [data-testid="stMarkdownContainer"] p { color: #0D1117 !important; }
+
+/* Sembunyikan "Press Enter to submit" */
+[data-testid="InputInstructions"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
 }
 
 /* ── BUTTONS PRIMARY ── */
 .stButton button[kind="primary"],
-.stFormSubmitButton button[kind="primary"],
-.stButton button[kind="primary"]:hover,
-.stFormSubmitButton button[kind="primary"]:hover {
-    background:linear-gradient(135deg,#3B5BDB 0%,#7048E8 100%)!important;
-    border:none!important;border-radius:50px!important;font-weight:700!important;
-    font-size:14px!important;font-family:var(--font-body)!important;color:#fff!important;
-    padding:10px 0!important;box-shadow:0 3px 14px rgba(59,91,219,0.25)!important;
-    transition:opacity .18s!important;
+.stFormSubmitButton button[kind="primary"] {
+    background: linear-gradient(135deg, #3B5BDB 0%, #7048E8 100%) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    padding: 10px 0 !important;
+    box-shadow: 0 3px 14px rgba(59,91,219,0.28) !important;
+    transition: opacity .18s !important;
 }
 .stButton button[kind="primary"]:hover,
-.stFormSubmitButton button[kind="primary"]:hover{opacity:.88!important;}
+.stFormSubmitButton button[kind="primary"]:hover { opacity: .88 !important; }
 
 /* ── BUTTON SECONDARY ── */
-.stButton button[kind="secondary"]{
-    border-radius:50px!important;border:1.5px solid var(--hairline)!important;
-    color:var(--ink)!important;font-weight:600!important;font-family:var(--font-body)!important;
-    background:#fff!important;transition:border-color .18s,color .18s;
+.stButton button[kind="secondary"] {
+    border-radius: 50px !important;
+    border: 1.5px solid #E2E8F0 !important;
+    color: #0D1117 !important;
+    -webkit-text-fill-color: #0D1117 !important;
+    font-weight: 600 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    background: #ffffff !important;
+    transition: border-color .18s, color .18s;
 }
-.stButton button[kind="secondary"]:hover{border-color:var(--blue)!important;color:var(--blue)!important;}
-
-/* ── METRICS ── */
-div[data-testid="stMetric"]{
-    background:#ffffff!important;border:1.5px solid var(--hairline)!important;
-    border-radius:16px!important;padding:18px 20px!important;
+.stButton button[kind="secondary"]:hover {
+    border-color: #3B5BDB !important;
+    color: #3B5BDB !important;
+    -webkit-text-fill-color: #3B5BDB !important;
 }
-div[data-testid="stMetricLabel"]{font-family:var(--font-code)!important;font-size:10px!important;letter-spacing:0.8px;color:var(--muted)!important;text-transform:uppercase;}
-div[data-testid="stMetricValue"]{font-family:var(--font-head)!important;font-size:26px!important;font-weight:700!important;color:var(--ink)!important;}
 
 /* ── DOWNLOAD BUTTON ── */
-.stDownloadButton button{
-    border-radius:50px!important;font-weight:600!important;font-family:var(--font-body)!important;
-    border:1.5px solid var(--hairline)!important;background:#fff!important;color:var(--ink)!important;transition:all .18s;
+.stDownloadButton button {
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    border: 1.5px solid #E2E8F0 !important;
+    background: #ffffff !important;
+    color: #0D1117 !important;
+    -webkit-text-fill-color: #0D1117 !important;
+    transition: all .18s;
 }
-.stDownloadButton button:hover{border-color:var(--blue)!important;color:var(--blue)!important;}
+.stDownloadButton button:hover {
+    border-color: #3B5BDB !important;
+    color: #3B5BDB !important;
+    -webkit-text-fill-color: #3B5BDB !important;
+}
 
 /* ── BACK BUTTON ── */
 .st-key-back_btn button {
-    background:linear-gradient(135deg,#3B5BDB 0%,#7048E8 100%)!important;
-    border:none!important;border-radius:50px!important;color:#ffffff!important;
-    font-weight:700!important;font-size:14px!important;font-family:var(--font-body)!important;
-    padding:10px 0!important;box-shadow:0 3px 14px rgba(59,91,219,0.30)!important;transition:opacity .18s!important;
+    background: linear-gradient(135deg, #3B5BDB 0%, #7048E8 100%) !important;
+    border: none !important;
+    border-radius: 50px !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    padding: 10px 0 !important;
+    box-shadow: 0 3px 14px rgba(59,91,219,0.30) !important;
+    transition: opacity .18s !important;
 }
-.st-key-back_btn button:hover{opacity:.88!important;}
+.st-key-back_btn button:hover { opacity: .88 !important; }
+
+/* ── METRICS ── */
+div[data-testid="stMetric"] {
+    background: #ffffff !important;
+    border: 1.5px solid #E2E8F0 !important;
+    border-radius: 16px !important;
+    padding: 18px 20px !important;
+}
+div[data-testid="stMetricLabel"] p {
+    font-family: 'Fira Code', monospace !important;
+    font-size: 10px !important;
+    letter-spacing: 0.8px;
+    color: #64748B !important;
+    text-transform: uppercase;
+}
+div[data-testid="stMetricValue"] {
+    font-family: 'Space Grotesk', sans-serif !important;
+    font-size: 26px !important;
+    font-weight: 700 !important;
+    color: #0D1117 !important;
+}
 
 /* ── RADIO ── */
-.stRadio label{font-size:13px!important;font-weight:500!important;font-family:var(--font-body)!important;}
+.stRadio label { font-size: 13px !important; font-weight: 500 !important; color: #0D1117 !important; }
 
 /* ── DATAFRAME ── */
-div[data-testid="stDataFrame"]{border-radius:14px;overflow:hidden;}
+div[data-testid="stDataFrame"] { border-radius: 14px; overflow: hidden; }
 
-/* ── MOBILE RESPONSIVE HELPERS ── */
-@media(max-width:600px){
-    div[data-testid="stMetricValue"]{font-size:20px!important;}
-    .block-container{padding-left:0.7rem!important;padding-right:0.7rem!important;}
+/* ── SIDEBAR BUTTON STYLE ── */
+[data-testid="stSidebar"] .stButton button {
+    width: 100% !important;
+    text-align: left !important;
+    border-radius: 12px !important;
+    border: 1.5px solid #E2E8F0 !important;
+    background: #F8FAFC !important;
+    color: #0D1117 !important;
+    -webkit-text-fill-color: #0D1117 !important;
+    font-weight: 600 !important;
+    padding: 10px 14px !important;
+    margin-bottom: 6px !important;
+    transition: all .18s !important;
+}
+[data-testid="stSidebar"] .stButton button:hover {
+    border-color: #3B5BDB !important;
+    background: #EEF2FF !important;
+    color: #3B5BDB !important;
+    -webkit-text-fill-color: #3B5BDB !important;
+}
+[data-testid="stSidebar"] .st-key-nav_input_active button,
+[data-testid="stSidebar"] .st-key-nav_log_active button {
+    background: linear-gradient(135deg, #EEF2FF, #F3F0FF) !important;
+    border-color: #C5D0FA !important;
+    color: #3B5BDB !important;
+    -webkit-text-fill-color: #3B5BDB !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -291,7 +397,8 @@ def generate_recommendations(data):
         recs.append({"title":"Profil Retensi Sangat Kuat","desc":"Mahasiswa menunjukkan performa optimal. Pertimbangkan program akselerasi atau beasiswa prestasi.","level":"BAIK"})
     if not recs:
         lbl = "BAIK" if is_safe else "WASPADA"
-        desc = "Tidak ada indikator risiko spesifik. Pertahankan pemantauan rutin setiap akhir semester." if is_safe else "Model mendeteksi risiko tinggi. Jadwalkan wawancara personal dengan mahasiswa."
+        desc = ("Tidak ada indikator risiko spesifik. Pertahankan pemantauan rutin setiap akhir semester."
+                if is_safe else "Model mendeteksi risiko tinggi. Jadwalkan wawancara personal dengan mahasiswa.")
         recs.append({"title":"Evaluasi Lanjutan Diperlukan","desc":desc,"level":lbl})
     return recs
 
@@ -305,137 +412,108 @@ def factor_score(data):
     }
 
 # ==========================================
-# HELPER — Chart generator (returns PNG bytes)
+# HELPER — Chart generator (FORCE white bg)
 # ==========================================
+CHART_STYLE = {
+    "bg": "#FFFFFF",
+    "text": "#0D1117",
+    "grid": "#E2E8F0",
+    "muted": "#64748B",
+}
+
+def _apply_chart_style(fig, ax):
+    """Force white background & dark text on every chart."""
+    fig.patch.set_facecolor(CHART_STYLE["bg"])
+    fig.patch.set_alpha(1.0)
+    ax.set_facecolor(CHART_STYLE["bg"])
+    ax.tick_params(colors=CHART_STYLE["muted"], labelsize=9)
+    for spine in ax.spines.values():
+        spine.set_edgecolor(CHART_STYLE["grid"])
+    ax.title.set_color(CHART_STYLE["text"])
+    ax.xaxis.label.set_color(CHART_STYLE["muted"])
+    ax.yaxis.label.set_color(CHART_STYLE["muted"])
+
+def _to_png(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=150, bbox_inches="tight",
+                facecolor=CHART_STYLE["bg"], edgecolor="none")
+    plt.close(fig)
+    buf.seek(0)
+    return buf.read()
+
 def make_ipk_chart(ipk1, ipk2):
     fig, ax = plt.subplots(figsize=(4.5, 2.6))
-    fig.patch.set_facecolor("#F8FAFF")
-    ax.set_facecolor("#F8FAFF")
+    _apply_chart_style(fig, ax)
     sems = ["Semester 1", "Semester 2"]
     vals = [ipk1, ipk2]
     color = "#3B5BDB"
     ax.plot(sems, vals, color=color, linewidth=2.5, marker="o", markersize=8,
-            markerfacecolor="#fff", markeredgewidth=2.5, markeredgecolor=color)
+            markerfacecolor="#ffffff", markeredgewidth=2.5, markeredgecolor=color)
     ax.fill_between(sems, vals, alpha=0.10, color=color)
-    for i, (s, v) in enumerate(zip(sems, vals)):
+    for s, v in zip(sems, vals):
         ax.annotate(f"{v:.2f}", (s, v), textcoords="offset points", xytext=(0, 10),
                     ha="center", fontsize=10, fontweight="bold", color=color)
-    ax.set_ylim(0, 4.2)
-    ax.set_ylabel("IPK", fontsize=9, color="#64748B")
-    ax.tick_params(colors="#64748B", labelsize=9)
-    for spine in ax.spines.values():
-        spine.set_edgecolor("#E2E8F0")
-    ax.grid(axis="y", color="#E2E8F0", linestyle="--", linewidth=0.8)
+    ax.set_ylim(0, 4.3)
+    ax.set_ylabel("IPK", fontsize=9, color=CHART_STYLE["muted"])
+    ax.grid(axis="y", color=CHART_STYLE["grid"], linestyle="--", linewidth=0.8)
     plt.tight_layout(pad=0.8)
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png", dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    buf.seek(0)
-    return buf.read()
+    return _to_png(fig)
 
 def make_sks_chart(sks1, sks2):
     fig, ax = plt.subplots(figsize=(4.5, 2.6))
-    fig.patch.set_facecolor("#F8F7FF")
-    ax.set_facecolor("#F8F7FF")
+    _apply_chart_style(fig, ax)
     sems = ["Semester 1", "Semester 2"]
     vals = [sks1, sks2]
-    colors = ["#7048E8", "#A78BFA"]
-    bars = ax.bar(sems, vals, color=colors, width=0.45, edgecolor="white", linewidth=1.5, zorder=3)
+    bars = ax.bar(sems, vals, color=["#7048E8", "#A78BFA"], width=0.45,
+                  edgecolor="#ffffff", linewidth=1.5, zorder=3)
     for bar, v in zip(bars, vals):
         ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.3, str(v),
                 ha="center", va="bottom", fontsize=10, fontweight="bold", color="#7048E8")
-    ax.set_ylim(0, max(vals) * 1.3 + 2)
-    ax.set_ylabel("SKS", fontsize=9, color="#64748B")
-    ax.tick_params(colors="#64748B", labelsize=9)
-    for spine in ax.spines.values():
-        spine.set_edgecolor("#E2E8F0")
-    ax.grid(axis="y", color="#E2E8F0", linestyle="--", linewidth=0.8, zorder=0)
+    ax.set_ylim(0, max(vals) * 1.35 + 2)
+    ax.set_ylabel("SKS", fontsize=9, color=CHART_STYLE["muted"])
+    ax.grid(axis="y", color=CHART_STYLE["grid"], linestyle="--", linewidth=0.8, zorder=0)
     plt.tight_layout(pad=0.8)
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png", dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    buf.seek(0)
-    return buf.read()
+    return _to_png(fig)
 
 def make_risiko_gauge(risk_pct, safe_pct):
     fig, ax = plt.subplots(figsize=(4.5, 2.4))
-    fig.patch.set_facecolor("white")
-    ax.set_facecolor("white")
+    _apply_chart_style(fig, ax)
     cats = ["Risiko Dropout", "Peluang Lulus"]
     vals = [risk_pct, safe_pct]
-    colors = ["#DC2626", "#0D9488"]
-    bars = ax.barh(cats, vals, color=colors, height=0.4, edgecolor="white", linewidth=1)
-    for bar, v in zip(bars, vals):
-        ax.text(min(v + 1, 97), bar.get_y() + bar.get_height()/2, f"{v:.1f}%",
-                va="center", fontsize=10, fontweight="bold", color="#0D1117")
+    ax.barh(cats, vals, color=["#DC2626", "#0D9488"], height=0.4,
+            edgecolor="#ffffff", linewidth=1)
+    for i, v in enumerate(vals):
+        ax.text(min(v + 1, 97), i, f"{v:.1f}%",
+                va="center", fontsize=10, fontweight="bold", color=CHART_STYLE["text"])
     ax.set_xlim(0, 100)
-    ax.set_xlabel("Persentase (%)", fontsize=9, color="#64748B")
-    ax.tick_params(colors="#64748B", labelsize=9)
-    for spine in ax.spines.values():
-        spine.set_edgecolor("#E2E8F0")
-    ax.grid(axis="x", color="#E2E8F0", linestyle="--", linewidth=0.8)
+    ax.set_xlabel("Persentase (%)", fontsize=9, color=CHART_STYLE["muted"])
+    ax.grid(axis="x", color=CHART_STYLE["grid"], linestyle="--", linewidth=0.8)
     plt.tight_layout(pad=0.8)
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png", dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    buf.seek(0)
-    return buf.read()
+    return _to_png(fig)
 
 def make_factor_chart(scores):
     fig, ax = plt.subplots(figsize=(5.5, 2.8))
-    fig.patch.set_facecolor("white")
-    ax.set_facecolor("white")
+    _apply_chart_style(fig, ax)
     labels = list(scores.keys())
-    vals = list(scores.values())
+    vals   = list(scores.values())
     colors = ["#0D9488" if v >= 70 else "#D97706" if v >= 40 else "#DC2626" for v in vals]
-    bars = ax.barh(labels, vals, color=colors, height=0.42, edgecolor="white", linewidth=1)
-    for bar, v in zip(bars, vals):
-        ax.text(min(v + 1, 97), bar.get_y() + bar.get_height()/2, f"{v}%",
-                va="center", fontsize=9, fontweight="bold", color="#0D1117")
+    ax.barh(labels, vals, color=colors, height=0.42, edgecolor="#ffffff", linewidth=1)
+    for i, v in enumerate(vals):
+        ax.text(min(v + 1, 97), i, f"{v}%",
+                va="center", fontsize=9, fontweight="bold", color=CHART_STYLE["text"])
     ax.set_xlim(0, 100)
-    ax.set_xlabel("Skor (%)", fontsize=9, color="#64748B")
-    ax.tick_params(colors="#64748B", labelsize=9)
-    for spine in ax.spines.values():
-        spine.set_edgecolor("#E2E8F0")
-    ax.grid(axis="x", color="#E2E8F0", linestyle="--", linewidth=0.8)
+    ax.set_xlabel("Skor (%)", fontsize=9, color=CHART_STYLE["muted"])
+    ax.grid(axis="x", color=CHART_STYLE["grid"], linestyle="--", linewidth=0.8)
     plt.tight_layout(pad=0.8)
-    buf = io.BytesIO()
-    plt.savefig(buf, format="png", dpi=150, bbox_inches="tight")
-    plt.close(fig)
-    buf.seek(0)
-    return buf.read()
-
-# ==========================================
-# HELPER — Set cell background / border
-# ==========================================
-def set_cell_bg(cell, hex_color):
-    tc = cell._tc
-    tcPr = tc.get_or_add_tcPr()
-    shd = OxmlElement("w:shd")
-    shd.set(qn("w:val"), "clear")
-    shd.set(qn("w:color"), "auto")
-    shd.set(qn("w:fill"), hex_color.replace("#",""))
-    tcPr.append(shd)
-
-def set_cell_border(cell, **kwargs):
-    tc = cell._tc
-    tcPr = tc.get_or_add_tcPr()
-    tcBorders = OxmlElement("w:tcBorders")
-    for edge in ("top","left","bottom","right"):
-        if edge in kwargs:
-            el = OxmlElement(f"w:{edge}")
-            for k,v in kwargs[edge].items():
-                el.set(qn(f"w:{k}"),v)
-            tcBorders.append(el)
-    tcPr.append(tcBorders)
+    return _to_png(fig)
 
 # ==========================================
 # HELPER — HTML Report
 # ==========================================
 def generate_html_report(active_data):
-    recs = generate_recommendations(active_data)
+    recs   = generate_recommendations(active_data)
     scores = factor_score(active_data)
-    _sa = active_data["SkorAman"]
+    _sa    = active_data["SkorAman"]
     if _sa >= 75:
         status_color = "#0D9488"; status_bg = "#CCFBF1"
     elif _sa >= 40:
@@ -443,8 +521,8 @@ def generate_html_report(active_data):
     else:
         status_color = "#DC2626"; status_bg = "#FEE2E2"
 
-    ipk_b64  = base64.b64encode(make_ipk_chart(active_data["IPK1"], active_data["IPK2"])).decode()
-    sks_b64  = base64.b64encode(make_sks_chart(active_data["SKS1"], active_data["SKS2"])).decode()
+    ipk_b64  = base64.b64encode(make_ipk_chart(active_data["IPK1"],   active_data["IPK2"])).decode()
+    sks_b64  = base64.b64encode(make_sks_chart(active_data["SKS1"],   active_data["SKS2"])).decode()
     risk_b64 = base64.b64encode(make_risiko_gauge(active_data["SkorRisiko"], active_data["SkorAman"])).decode()
     fact_b64 = base64.b64encode(make_factor_chart(scores)).decode()
 
@@ -453,7 +531,6 @@ def generate_html_report(active_data):
         "WASPADA": ("D97706","FEF3C7","FDE68A"),
         "BAIK":    ("0D9488","CCFBF1","99F6E4"),
     }
-
     recs_html = ""
     for rec in recs:
         fg, bg, border = level_style.get(rec["level"], ("3B5BDB","EEF2FF","C5D0FA"))
@@ -474,45 +551,41 @@ def generate_html_report(active_data):
 <meta charset="UTF-8"/>
 <title>Laporan Evaluasi — {active_data['Nama']}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&family=Fira+Code:wght@500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&family=Fira+Code:wght@500&display=swap');
   *{{box-sizing:border-box;margin:0;padding:0;}}
   body{{font-family:'Plus Jakarta Sans',sans-serif;background:#F0F4FA;color:#0D1117;font-size:12px;}}
   @media print{{
     body{{background:white;}}
     .no-print{{display:none!important;}}
-    .page-break{{page-break-before:always;}}
     @page{{margin:1.5cm;size:A4;}}
   }}
   .container{{max-width:900px;margin:0 auto;padding:24px;}}
   .print-btn{{position:fixed;top:20px;right:20px;background:linear-gradient(135deg,#3B5BDB,#7048E8);color:#fff;
               border:none;border-radius:50px;padding:12px 24px;font-family:'Plus Jakarta Sans',sans-serif;
               font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(59,91,219,0.3);z-index:999;}}
-  .print-btn:hover{{opacity:.9;}}
   .header{{background:linear-gradient(135deg,#3B5BDB 0%,#1E1B4B 100%);border-radius:16px;
-           padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;}}
-  .header-left h1{{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px;}}
-  .header-left p{{font-size:11px;color:#C5D0FA;margin-top:4px;font-family:'Fira Code',monospace;letter-spacing:0.5px;}}
-  .header-right{{text-align:right;}}
+           padding:28px 32px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}}
+  .header-left h1{{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#fff;}}
+  .header-left p{{font-size:11px;color:#C5D0FA;margin-top:4px;font-family:'Fira Code',monospace;}}
   .header-right .date{{font-family:'Fira Code',monospace;font-size:11px;color:#A5B4FC;}}
   .section{{background:#fff;border-radius:14px;padding:24px;margin-bottom:18px;border:1.5px solid #E2E8F0;}}
-  .section-title{{font-family:'Fira Code',monospace;font-size:13px;font-weight:700;color:#3B5BDB;
-                  text-transform:uppercase;letter-spacing:1px;border-left:3px solid #3B5BDB;padding-left:10px;
-                  margin-bottom:16px;}}
+  .section-title{{font-family:'Fira Code',monospace;font-size:11px;font-weight:700;color:#3B5BDB;
+                  text-transform:uppercase;letter-spacing:1px;border-left:3px solid #3B5BDB;padding-left:10px;margin-bottom:16px;}}
   .id-grid{{display:grid;grid-template-columns:1fr 1fr;gap:10px;}}
   .id-item{{background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;padding:10px 14px;}}
   .id-item .lbl{{font-size:9px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.8px;font-family:'Fira Code',monospace;margin-bottom:2px;}}
   .id-item .val{{font-size:14px;font-weight:700;color:#0D1117;font-family:'Space Grotesk',sans-serif;}}
-  .status-badge{{display:inline-flex;align-items:center;gap:6px;background:{status_bg};color:{status_color};
-                 font-family:'Fira Code',monospace;font-size:11px;font-weight:600;padding:8px 18px;border-radius:50px;
-                 letter-spacing:0.5px;text-transform:uppercase;}}
+  .status-badge{{display:inline-flex;align-items:center;background:{status_bg};color:{status_color};
+                 font-family:'Fira Code',monospace;font-size:11px;font-weight:600;padding:8px 18px;
+                 border-radius:50px;text-transform:uppercase;margin-top:10px;}}
   .chart-row{{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;}}
   .chart-box{{background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;padding:14px;text-align:center;}}
-  .chart-box .chart-title{{font-family:'Fira Code',monospace;font-size:9.5px;font-weight:600;color:#3B5BDB;
+  .chart-box .chart-title{{font-family:'Fira Code',monospace;font-size:9px;font-weight:600;color:#3B5BDB;
                             text-transform:uppercase;letter-spacing:0.7px;margin-bottom:8px;}}
   .chart-box img{{max-width:100%;border-radius:8px;}}
   .sem-table{{width:100%;border-collapse:collapse;margin-top:4px;}}
-  .sem-table th{{background:#3B5BDB;color:#fff;padding:8px 12px;text-align:left;font-size:10px;font-family:'Fira Code',monospace;letter-spacing:0.5px;}}
-  .sem-table td{{padding:8px 12px;font-size:11px;border-bottom:1px solid #F1F5F9;}}
+  .sem-table th{{background:#3B5BDB;color:#fff;padding:8px 12px;text-align:left;font-size:10px;font-family:'Fira Code',monospace;}}
+  .sem-table td{{padding:8px 12px;font-size:11px;border-bottom:1px solid #F1F5F9;color:#0D1117;}}
   .sem-table tr:last-child td{{border-bottom:none;}}
   .footer{{text-align:center;padding:20px;font-size:10px;color:#94A3B8;font-family:'Fira Code',monospace;}}
 </style>
@@ -528,7 +601,7 @@ def generate_html_report(active_data):
     <div class="header-right">
       <div class="date">{time.strftime('%d %B %Y')}</div>
       <div class="date">{time.strftime('%H:%M:%S')} WIB</div>
-      <div style="margin-top:10px;"><span class="status-badge">{active_data['Status']}</span></div>
+      <div><span class="status-badge">{active_data['Status']}</span></div>
     </div>
   </div>
   <div class="section">
@@ -540,12 +613,9 @@ def generate_html_report(active_data):
         <div class="val" style="color:{'#0D9488' if active_data['SPP']=='Lancar' else '#DC2626'};">{active_data['SPP']}</div></div>
       <div class="id-item"><div class="lbl">Rerata IPK</div><div class="val">{active_data['RerataIPK']:.2f}</div></div>
       <div class="id-item"><div class="lbl">Total SKS</div><div class="val">{active_data['TotalSKS']} SKS</div></div>
-      <div class="id-item"><div class="lbl">Peluang Lulus</div>
-        <div class="val" style="color:#3B5BDB;">{active_data['SkorAman']}%</div></div>
-      <div class="id-item"><div class="lbl">Faktor Risiko Dropout</div>
-        <div class="val" style="color:#DC2626;">{active_data['SkorRisiko']}%</div></div>
-      <div class="id-item"><div class="lbl">Prediksi Model</div>
-        <div class="val" style="color:{status_color};">{active_data['Status']}</div></div>
+      <div class="id-item"><div class="lbl">Peluang Lulus</div><div class="val" style="color:#3B5BDB;">{active_data['SkorAman']}%</div></div>
+      <div class="id-item"><div class="lbl">Faktor Risiko Dropout</div><div class="val" style="color:#DC2626;">{active_data['SkorRisiko']}%</div></div>
+      <div class="id-item"><div class="lbl">Prediksi Model</div><div class="val" style="color:{status_color};">{active_data['Status']}</div></div>
     </div>
   </div>
   <div class="section">
@@ -554,21 +624,16 @@ def generate_html_report(active_data):
       <thead><tr><th>Indikator</th><th>Semester 1</th><th>Semester 2</th><th>Keterangan</th></tr></thead>
       <tbody>
         <tr style="background:#F8FAFC;">
-          <td style="font-weight:600;">IPK (Indeks Prestasi)</td>
+          <td style="font-weight:600;">IPK</td>
           <td style="font-weight:700;color:#3B5BDB;">{active_data['IPK1']:.2f}</td>
           <td style="font-weight:700;color:{'#0D9488' if active_data['IPK2']>=active_data['IPK1'] else '#DC2626'};">{active_data['IPK2']:.2f}</td>
-          <td style="color:{'#0D9488' if active_data['IPK2']>=active_data['IPK1'] else '#DC2626'};">
-            {'▲ Meningkat' if active_data['IPK2']>active_data['IPK1'] else ('▼ Menurun' if active_data['IPK2']<active_data['IPK1'] else '→ Stabil')}
-            {f" ({abs(active_data['IPK2']-active_data['IPK1']):.2f} poin)" if active_data['IPK2']!=active_data['IPK1'] else ""}
-          </td>
+          <td>{'▲ Meningkat' if active_data['IPK2']>active_data['IPK1'] else ('▼ Menurun' if active_data['IPK2']<active_data['IPK1'] else '→ Stabil')}</td>
         </tr>
         <tr>
-          <td style="font-weight:600;">Jumlah SKS Diambil</td>
+          <td style="font-weight:600;">SKS Diambil</td>
           <td style="font-weight:700;color:#7048E8;">{active_data['SKS1']} SKS</td>
           <td style="font-weight:700;color:{'#0D9488' if active_data['SKS2']>=active_data['SKS1'] else '#DC2626'};">{active_data['SKS2']} SKS</td>
-          <td style="color:{'#0D9488' if active_data['SKS2']>=active_data['SKS1'] else '#D97706'};">
-            {'▲ Bertambah' if active_data['SKS2']>active_data['SKS1'] else ('▼ Berkurang' if active_data['SKS2']<active_data['SKS1'] else '→ Sama')}
-          </td>
+          <td>{'▲ Bertambah' if active_data['SKS2']>active_data['SKS1'] else ('▼ Berkurang' if active_data['SKS2']<active_data['SKS1'] else '→ Sama')}</td>
         </tr>
       </tbody>
     </table>
@@ -576,175 +641,194 @@ def generate_html_report(active_data):
   <div class="section">
     <div class="section-title">3 · Visualisasi &amp; Grafik</div>
     <div class="chart-row">
-      <div class="chart-box">
-        <div class="chart-title">Fluktuasi IPK per Semester</div>
-        <img src="data:image/png;base64,{ipk_b64}" alt="IPK Chart"/>
-      </div>
-      <div class="chart-box">
-        <div class="chart-title">Volume SKS per Semester</div>
-        <img src="data:image/png;base64,{sks_b64}" alt="SKS Chart"/>
-      </div>
+      <div class="chart-box"><div class="chart-title">Fluktuasi IPK</div><img src="data:image/png;base64,{ipk_b64}"/></div>
+      <div class="chart-box"><div class="chart-title">Volume SKS</div><img src="data:image/png;base64,{sks_b64}"/></div>
     </div>
     <div class="chart-row" style="margin-top:14px;">
-      <div class="chart-box">
-        <div class="chart-title">Distribusi Skor Risiko vs Kelulusan</div>
-        <img src="data:image/png;base64,{risk_b64}" alt="Risk Chart"/>
-      </div>
-      <div class="chart-box">
-        <div class="chart-title">Indikator Faktor Keputusan Model</div>
-        <img src="data:image/png;base64,{fact_b64}" alt="Factor Chart"/>
-      </div>
+      <div class="chart-box"><div class="chart-title">Skor Risiko vs Kelulusan</div><img src="data:image/png;base64,{risk_b64}"/></div>
+      <div class="chart-box"><div class="chart-title">Faktor Keputusan Model</div><img src="data:image/png;base64,{fact_b64}"/></div>
     </div>
   </div>
   <div class="section">
     <div class="section-title">4 · Rekomendasi Intervensi Akademik</div>
     {recs_html}
   </div>
-  <div class="footer">Dokumen ini digenerate otomatis oleh PortalAkademik &mdash; {time.strftime('%d %B %Y, %H:%M:%S')} WIB</div>
+  <div class="footer">Digenerate otomatis oleh PortalAkademik — {time.strftime('%d %B %Y, %H:%M:%S')} WIB</div>
 </div>
 </body>
 </html>"""
     return html
 
 # ==========================================
-# 6. TOPBAR (selalu tampil, tidak ada login)
+# 6. SIDEBAR NAVIGATION (geser ke pinggir)
+# ==========================================
+with st.sidebar:
+    st.markdown(f"""
+    <div style="padding:20px 4px 20px 4px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;
+                    padding-bottom:16px;border-bottom:1.5px solid #E2E8F0;">
+            <div style="width:38px;height:38px;border-radius:10px;
+                        background:linear-gradient(135deg,#EEF2FF,#F3F0FF);
+                        border:1.5px solid #C5D0FA;
+                        display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                {LOGO_SVG.format(size=18, color="#3B5BDB")}
+            </div>
+            <div>
+                <div style="font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:700;color:#0D1117;line-height:1.2;">
+                    <span style="color:#3B5BDB;">Portal</span>Akademik
+                </div>
+                <div style="font-family:'Fira Code',monospace;font-size:9px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.6px;">
+                    v1.0 · Random Forest
+                </div>
+            </div>
+        </div>
+
+        <div style="font-family:'Fira Code',monospace;font-size:9px;font-weight:600;color:#94A3B8;
+                    text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
+            Navigasi
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Tombol Form Input
+    _active_input = st.session_state.page == "input"
+    _bg_i = "linear-gradient(135deg,#EEF2FF,#F3F0FF)" if _active_input else "#F8FAFC"
+    _bd_i = "#C5D0FA" if _active_input else "#E2E8F0"
+    _col_i = "#3B5BDB" if _active_input else "#64748B"
+    _fw_i  = "700" if _active_input else "600"
+    _tc_i  = "#3B5BDB" if _active_input else "#0D1117"
+    st.markdown(f"""
+    <div style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;
+                border-radius:12px;margin-bottom:4px;
+                background:{_bg_i};border:1.5px solid {_bd_i};cursor:pointer;">
+        {CLIPBOARD_ICON.format(size=15, color=_col_i)}
+        <div>
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:{_fw_i};color:{_tc_i};">
+                Form Input Parameter
+            </div>
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;color:#94A3B8;">
+                Input data mahasiswa baru
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    if st.button("Form Input Parameter", use_container_width=True,
+                 key="nav_input_active" if _active_input else "nav_input"):
+        switch_page("input")
+
+    # Tombol Log Aktivitas (hanya jika ada data)
+    if len(st.session_state.history) > 0:
+        _active_log = st.session_state.page == "log"
+        _bg_l  = "linear-gradient(135deg,#EEF2FF,#F3F0FF)" if _active_log else "#F8FAFC"
+        _bd_l  = "#C5D0FA" if _active_log else "#E2E8F0"
+        _col_l = "#3B5BDB" if _active_log else "#64748B"
+        _fw_l  = "700" if _active_log else "600"
+        _tc_l  = "#3B5BDB" if _active_log else "#0D1117"
+        _count = len(st.session_state.history)
+        st.markdown(f"""
+        <div style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;
+                    border-radius:12px;margin-bottom:4px;
+                    background:{_bg_l};border:1.5px solid {_bd_l};cursor:pointer;">
+            {TABLE_ICON.format(size=15, color=_col_l)}
+            <div style="flex:1;">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:{_fw_l};color:{_tc_l};">
+                        Log Aktivitas
+                    </div>
+                    <span style="font-family:'Fira Code',monospace;font-size:9px;font-weight:700;
+                                 background:#3B5BDB;color:#ffffff;padding:2px 7px;border-radius:20px;">{_count}</span>
+                </div>
+                <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;color:#94A3B8;">
+                    Riwayat evaluasi mahasiswa
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("Log Aktivitas Global", use_container_width=True,
+                     key="nav_log_active" if _active_log else "nav_log"):
+            switch_page("log")
+
+    # Divider & Info user
+    st.markdown(f"""
+    <div style="border-top:1.5px solid #E2E8F0;margin:16px 0 14px 0;"></div>
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;
+                background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:12px;">
+        <div style="width:32px;height:32px;border-radius:8px;
+                    background:linear-gradient(135deg,#3B5BDB,#7048E8);
+                    display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            {USER_ICON.format(size=14, color="#ffffff")}
+        </div>
+        <div>
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:#0D1117;">
+                Administrator
+            </div>
+            <div style="font-family:'Fira Code',monospace;font-size:9px;color:#94A3B8;">
+                Sesi aktif
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ==========================================
+# 7. TOPBAR (branding, tanpa tombol menu)
 # ==========================================
 with st.container(key="topbar"):
-    tb1, tb2, tb3 = st.columns([6, 2, 1])
+    tb1, tb2 = st.columns([7, 3])
     with tb1:
         st.markdown(f"""
             <div style="display:flex;align-items:center;gap:12px;">
-                <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#EEF2FF,#F3F0FF);
-                            border:1.5px solid #c5d0fa;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                <div style="width:40px;height:40px;border-radius:12px;
+                            background:linear-gradient(135deg,#EEF2FF,#F3F0FF);
+                            border:1.5px solid #c5d0fa;
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     {LOGO_SVG.format(size=20, color="#3B5BDB")}
                 </div>
                 <div>
-                    <p style="font-family:'Space Grotesk',sans-serif;color:#0D1117;font-size:15.5px;font-weight:700;margin:0;letter-spacing:-0.5px;">
-                        <span style="color:#3B5BDB;">Portal</span>Akademik</p>
-                    <p style="font-family:'Fira Code',monospace;color:#64748B;font-size:9.5px;text-transform:uppercase;letter-spacing:0.7px;margin:1px 0 0 0;">
-                        Prediksi Risiko Dropout &middot; Random Forest</p>
+                    <p style="font-family:'Space Grotesk',sans-serif;color:#0D1117;font-size:15.5px;
+                               font-weight:700;margin:0;letter-spacing:-0.5px;">
+                        <span style="color:#3B5BDB;">Portal</span>Akademik
+                    </p>
+                    <p style="font-family:'Fira Code',monospace;color:#64748B;font-size:9.5px;
+                               text-transform:uppercase;letter-spacing:0.7px;margin:1px 0 0 0;">
+                        Prediksi Risiko Dropout &middot; Random Forest
+                    </p>
                 </div>
             </div>
         """, unsafe_allow_html=True)
     with tb2:
-        st.markdown(f"""<div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;height:100%;
-            font-family:'Fira Code',monospace;font-size:10.5px;color:#64748B;padding-top:10px;">
-            {CALENDAR_ICON.format(size=13, color="#64748B")} {time.strftime('%d %B %Y')}</div>""",
-            unsafe_allow_html=True)
-    with tb3:
-        with st.popover("☰  Menu", use_container_width=False):
-            # Header menu
-            st.markdown(f"""
-            <div style="padding:4px 2px 14px 2px;border-bottom:1.5px solid #F1F5F9;margin-bottom:14px;">
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:36px;height:36px;border-radius:10px;
-                                background:linear-gradient(135deg,#EEF2FF,#F3F0FF);
-                                border:1.5px solid #C5D0FA;
-                                display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                        {LOGO_SVG.format(size=18, color="#3B5BDB")}
-                    </div>
-                    <div>
-                        <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:#0D1117;line-height:1.2;">
-                            <span style="color:#3B5BDB;">Portal</span>Akademik
-                        </div>
-                        <div style="font-family:'Fira Code',monospace;font-size:9px;color:#94A3B8;text-transform:uppercase;letter-spacing:0.6px;">
-                            v1.0 · Random Forest
-                        </div>
-                    </div>
-                </div>
+        st.markdown(f"""
+            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;
+                        height:100%;font-family:'Fira Code',monospace;font-size:10.5px;
+                        color:#64748B;padding-top:10px;">
+                {CALENDAR_ICON.format(size=13, color="#64748B")} {time.strftime('%d %B %Y')}
             </div>
-            <div style="font-family:'Fira Code',monospace;font-size:9px;font-weight:600;color:#94A3B8;
-                        text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;padding-left:2px;">
-                Navigasi
-            </div>
-            """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
-            # Tombol Form Input
-            _active_input = st.session_state.page == "input"
-            _bg_input  = "linear-gradient(135deg,#EEF2FF,#F3F0FF)" if _active_input else "#F8FAFC"
-            _bd_input  = "#C5D0FA" if _active_input else "#E2E8F0"
-            _col_input = "#3B5BDB" if _active_input else "#64748B"
-            _fw_input  = "700" if _active_input else "600"
-            _tc_input  = "#3B5BDB" if _active_input else "#0D1117"
-            st.markdown(f"""
-            <div style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;
-                        border-radius:10px;margin-bottom:6px;
-                        background:{_bg_input};border:1.5px solid {_bd_input};">
-                {CLIPBOARD_ICON.format(size=15, color=_col_input)}
-                <div>
-                    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:{_fw_input};color:{_tc_input};">Form Input Parameter</div>
-                    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;color:#94A3B8;">Input data mahasiswa baru</div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-            if st.button("Form Input Parameter", use_container_width=True, key="nav_input"):
-                switch_page("input")
-
-            # Tombol Log Aktivitas
-            if len(st.session_state.history) > 0:
-                _active_log = st.session_state.page == "log"
-                _bg_log  = "linear-gradient(135deg,#EEF2FF,#F3F0FF)" if _active_log else "#F8FAFC"
-                _bd_log  = "#C5D0FA" if _active_log else "#E2E8F0"
-                _col_log = "#3B5BDB" if _active_log else "#64748B"
-                _fw_log  = "700" if _active_log else "600"
-                _tc_log  = "#3B5BDB" if _active_log else "#0D1117"
-                _count   = len(st.session_state.history)
-                st.markdown(f"""
-                <div style="display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;
-                            border-radius:10px;margin-bottom:6px;
-                            background:{_bg_log};border:1.5px solid {_bd_log};">
-                    {TABLE_ICON.format(size=15, color=_col_log)}
-                    <div style="flex:1;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;">
-                            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12.5px;font-weight:{_fw_log};color:{_tc_log};">Log Aktivitas Global</div>
-                            <span style="font-family:'Fira Code',monospace;font-size:9px;font-weight:700;
-                                         background:#3B5BDB;color:#fff;padding:2px 7px;border-radius:20px;">{_count}</span>
-                        </div>
-                        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;color:#94A3B8;">Riwayat evaluasi mahasiswa</div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
-                if st.button("Log Aktivitas Global", use_container_width=True, key="nav_log"):
-                    switch_page("log")
-
-            # Info user
-            st.markdown(f"""
-            <div style="border-top:1.5px solid #F1F5F9;margin:10px 0 12px 0;"></div>
-            <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;
-                        background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:10px;margin-bottom:8px;">
-                <div style="width:30px;height:30px;border-radius:8px;
-                            background:linear-gradient(135deg,#3B5BDB,#7048E8);
-                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                    {USER_ICON.format(size=14, color="#fff")}
-                </div>
-                <div>
-                    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:700;color:#0D1117;">Administrator</div>
-                    <div style="font-family:'Fira Code',monospace;font-size:9px;color:#94A3B8;">Sesi aktif</div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
-
-st.markdown("<div style='height:78px;'></div>", unsafe_allow_html=True)
+st.markdown("<div style='height:82px;'></div>", unsafe_allow_html=True)
 
 # ==========================================
-# 7. HALAMAN INPUT
+# 8. HALAMAN FORM INPUT
 # ==========================================
 if st.session_state.page == "input":
     with st.form("input_form"):
         with st.container(border=True):
-            st.markdown(f'<div class="section-label">{IDCARD_ICON.format(size=14, color="#3B5BDB")} Identitas Pokok Mahasiswa</div>',
-                        unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="section-label">'
+                f'{IDCARD_ICON.format(size=14, color="#3B5BDB")} Identitas Pokok Mahasiswa</div>',
+                unsafe_allow_html=True)
             col_id1, col_id2 = st.columns(2, gap="large")
             with col_id1:
                 nama = st.text_input("Nama Lengkap Mahasiswa", placeholder="Contoh: Muhammad Akbar")
             with col_id2:
-                nim = st.text_input("Nomor Induk Mahasiswa (NIM)", placeholder="Contoh: I00129031")
+                nim  = st.text_input("Nomor Induk Mahasiswa (NIM)", placeholder="Contoh: I00129031")
 
         st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
 
         with st.container(border=True):
-            st.markdown(f'<div class="section-label">{CLIPBOARD_ICON.format(size=14, color="#3B5BDB")} Nilai Atribut & Capaian Akademik Semester</div>',
-                        unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="section-label">'
+                f'{CLIPBOARD_ICON.format(size=14, color="#3B5BDB")} Nilai Atribut & Capaian Akademik Semester</div>',
+                unsafe_allow_html=True)
             g1, g2, g3, g4 = st.columns(4, gap="large")
             with g1:
                 sem1_app      = st.number_input("SKS Diambil Sem 1", 0, 24, 12)
@@ -760,13 +844,14 @@ if st.session_state.page == "input":
                 age_enrol = st.number_input("Usia Saat Registrasi", 15, 60, 19)
 
         st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
-        submitted = st.form_submit_button("→  Proses Evaluasi Data", type="primary", use_container_width=True)
+        submitted = st.form_submit_button(
+            "→  Proses Evaluasi Data", type="primary", use_container_width=True)
 
     if submitted:
         if not nama or not nim:
             st.warning("Data parameter Nama dan NIM harus diisi lengkap.")
         else:
-            input_feed = pd.DataFrame([[
+            input_feed  = pd.DataFrame([[
                 sem2_app, sem2_grd_indo*5, sem1_app, sem1_grd_indo*5,
                 1 if tuit_fees=="Lancar" else 0,
                 1 if debtor=="Ada" else 0,
@@ -780,13 +865,14 @@ if st.session_state.page == "input":
             st.session_state.history = [h for h in st.session_state.history if h["NIM"] != nim]
             st.session_state.history.append({
                 "NIM": nim, "Nama": nama.upper(),
-                "SKS1": sem1_app, "IPK1": sem1_grd_indo,
-                "SKS2": sem2_app, "IPK2": sem2_grd_indo,
-                "TotalSKS": sem1_app + sem2_app,
+                "SKS1": sem1_app,      "IPK1": sem1_grd_indo,
+                "SKS2": sem2_app,      "IPK2": sem2_grd_indo,
+                "TotalSKS":  sem1_app + sem2_app,
                 "RerataIPK": round((sem1_grd_indo + sem2_grd_indo)/2, 2),
                 "SPP": tuit_fees,
-                "SkorAman": round(safe, 2), "SkorRisiko": round(risk, 2),
-                "Class": prediction[0],
+                "SkorAman":   round(safe, 2),
+                "SkorRisiko": round(risk, 2),
+                "Class":  prediction[0],
                 "Status": ("AMAN (RETENSI TINGGI)" if safe >= 75
                            else ("WASPADA (RISIKO SEDANG)" if safe >= 40
                                  else "KERENTANAN DROPOUT TINGGI"))
@@ -795,7 +881,7 @@ if st.session_state.page == "input":
             switch_page("log")
 
 # ==========================================
-# 8. HALAMAN LOG AKTIVITAS
+# 9. HALAMAN LOG AKTIVITAS
 # ==========================================
 elif st.session_state.page == "log":
     if len(st.session_state.history) == 0:
@@ -810,79 +896,92 @@ elif st.session_state.page == "log":
     total_waspada = sum(1 for h in st.session_state.history if 40 <= h['SkorAman'] < 75)
     total_risiko  = sum(1 for h in st.session_state.history if h['SkorAman'] < 40)
 
-    st.markdown("""<div style="margin-bottom:22px;">
-        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:#0D1117;margin:0 0 4px 0;letter-spacing:-0.4px;">Log Aktivitas Evaluasi</h2>
-        <p style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:#64748B;margin:0;">Ringkasan seluruh mahasiswa yang telah dievaluasi pada sesi ini.</p>
+    st.markdown("""
+    <div style="margin-bottom:22px;">
+        <h2 style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;
+                   color:#0D1117;margin:0 0 4px 0;letter-spacing:-0.4px;">Log Aktivitas Evaluasi</h2>
+        <p style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;color:#64748B;margin:0;">
+            Ringkasan seluruh mahasiswa yang telah dievaluasi pada sesi ini.
+        </p>
     </div>""", unsafe_allow_html=True)
 
     s1, s2, s3, s4 = st.columns(4, gap="medium")
-    with s1:
-        st.markdown(f"""<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px 20px;border-top:4px solid #3B5BDB;">
-            <div style="font-family:'Fira Code',monospace;font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Total Dievaluasi</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:#0D1117;">{total_mhs}</div>
-            <div style="font-size:12px;color:#64748B;">Orang</div></div>""", unsafe_allow_html=True)
-    with s2:
-        st.markdown(f"""<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px 20px;border-top:4px solid #0D9488;">
-            <div style="font-family:'Fira Code',monospace;font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Retensi Tinggi (≥75%)</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:#0D9488;">{total_aman}</div>
-            <div style="font-size:12px;color:#64748B;">Mahasiswa aman</div></div>""", unsafe_allow_html=True)
-    with s3:
-        st.markdown(f"""<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px 20px;border-top:4px solid #D97706;">
-            <div style="font-family:'Fira Code',monospace;font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Waspada (40–74%)</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:#D97706;">{total_waspada}</div>
-            <div style="font-size:12px;color:#64748B;">Perlu monitoring</div></div>""", unsafe_allow_html=True)
-    with s4:
-        st.markdown(f"""<div style="background:#fff;border:1.5px solid #E2E8F0;border-radius:16px;padding:18px 20px;border-top:4px solid #DC2626;">
-            <div style="font-family:'Fira Code',monospace;font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">Risiko Tinggi (&lt;40%)</div>
-            <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:#DC2626;">{total_risiko}</div>
-            <div style="font-size:12px;color:#64748B;">Kasus terdeteksi</div></div>""", unsafe_allow_html=True)
+    card_data = [
+        (s1, "#3B5BDB", "Total Dievaluasi",    total_mhs,     "Orang"),
+        (s2, "#0D9488", "Retensi Tinggi (≥75%)", total_aman,   "Mahasiswa aman"),
+        (s3, "#D97706", "Waspada (40–74%)",     total_waspada, "Perlu monitoring"),
+        (s4, "#DC2626", "Risiko Tinggi (<40%)", total_risiko,  "Kasus terdeteksi"),
+    ]
+    for col, color, label, val, sub in card_data:
+        with col:
+            st.markdown(f"""
+            <div style="background:#ffffff;border:1.5px solid #E2E8F0;border-radius:16px;
+                        padding:18px 20px;border-top:4px solid {color};">
+                <div style="font-family:'Fira Code',monospace;font-size:10px;color:#64748B;
+                            text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;">{label}</div>
+                <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:{color};">{val}</div>
+                <div style="font-size:12px;color:#64748B;">{sub}</div>
+            </div>""", unsafe_allow_html=True)
 
     st.markdown("<div style='height:22px;'></div>", unsafe_allow_html=True)
-    st.markdown(f'<div class="section-label">{TABLE_ICON.format(size=14, color="#3B5BDB")} Tabel Riwayat Aktivitas Evaluasi</div>',
-                unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="section-label">{TABLE_ICON.format(size=14, color="#3B5BDB")} Tabel Riwayat Aktivitas Evaluasi</div>',
+        unsafe_allow_html=True)
     st.dataframe(df_full[["NIM","Nama","TotalSKS","RerataIPK","SPP","Status"]],
                  use_container_width=True, height=min(40+len(df_full)*35, 240))
 
     st.markdown("<div style='height:22px;'></div>", unsafe_allow_html=True)
-    st.markdown(f'<div class="section-label">{TARGET_ICON.format(size=14, color="#3B5BDB")} Pilih Record Mahasiswa untuk Visualisasi Performa</div>',
-                unsafe_allow_html=True)
-    options_list = [f"[{item['NIM']}] {item['Nama']}" for item in st.session_state.history]
+    st.markdown(
+        f'<div class="section-label">{TARGET_ICON.format(size=14, color="#3B5BDB")} Pilih Record Mahasiswa untuk Visualisasi</div>',
+        unsafe_allow_html=True)
+
+    options_list  = [f"[{item['NIM']}] {item['Nama']}" for item in st.session_state.history]
     default_index = 0
     if st.session_state.selected_student_uid:
         for idx, item in enumerate(st.session_state.history):
             if item["NIM"] == st.session_state.selected_student_uid:
                 default_index = idx
-    selection = st.radio("", options=options_list, index=default_index, horizontal=True, label_visibility="collapsed")
+
+    selection   = st.radio("", options=options_list, index=default_index,
+                           horizontal=True, label_visibility="collapsed")
     current_nim = selection.split("]")[0].replace("[","").strip()
     if current_nim != st.session_state.selected_student_uid:
         st.session_state.selected_student_uid = current_nim
         st.rerun()
 
-    active_data = next(item for item in st.session_state.history if item["NIM"] == st.session_state.selected_student_uid)
+    active_data = next(item for item in st.session_state.history
+                       if item["NIM"] == st.session_state.selected_student_uid)
     st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
     _skor_aman = active_data["SkorAman"]
     if _skor_aman >= 75:
-        badge_color = "#0D9488"; badge_bg = "#CCFBF1"; badge_icon = CHECK_ICON.format(size=14, color="#0D9488")
+        badge_color = "#0D9488"; badge_bg = "#CCFBF1"
+        badge_icon  = CHECK_ICON.format(size=14, color="#0D9488")
     elif _skor_aman >= 40:
-        badge_color = "#D97706"; badge_bg = "#FEF3C7"; badge_icon = ALERT_ICON.format(size=14, color="#D97706")
+        badge_color = "#D97706"; badge_bg = "#FEF3C7"
+        badge_icon  = ALERT_ICON.format(size=14, color="#D97706")
     else:
-        badge_color = "#DC2626"; badge_bg = "#FEE2E2"; badge_icon = ALERT_ICON.format(size=14, color="#DC2626")
+        badge_color = "#DC2626"; badge_bg = "#FEE2E2"
+        badge_icon  = ALERT_ICON.format(size=14, color="#DC2626")
 
     with st.container(border=True):
         st.markdown(f"""
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
                         padding:4px 4px 16px 4px;border-bottom:1.5px solid #F1F5F9;margin-bottom:18px;">
                 <div>
-                    <div style="font-size:10.5px;font-family:'Fira Code',monospace;color:#64748B;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">Mahasiswa Terpilih</div>
-                    <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;color:#0D1117;letter-spacing:-0.3px;">
+                    <div style="font-size:10.5px;font-family:'Fira Code',monospace;color:#64748B;
+                                text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">Mahasiswa Terpilih</div>
+                    <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;
+                                color:#0D1117;letter-spacing:-0.3px;">
                         {active_data['Nama']}
-                        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:400;color:#64748B;margin-left:8px;">NIM {active_data['NIM']}</span>
+                        <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+                                     font-weight:400;color:#64748B;margin-left:8px;">NIM {active_data['NIM']}</span>
                     </div>
                 </div>
-                <span style="display:inline-flex;align-items:center;gap:8px;font-family:'Fira Code',monospace;font-weight:600;
-                             font-size:11px;letter-spacing:0.6px;text-transform:uppercase;padding:10px 22px;border-radius:50px;
-                             color:{badge_color};background:{badge_bg};">
+                <span style="display:inline-flex;align-items:center;gap:8px;
+                             font-family:'Fira Code',monospace;font-weight:600;font-size:11px;
+                             letter-spacing:0.6px;text-transform:uppercase;padding:10px 22px;
+                             border-radius:50px;color:{badge_color};background:{badge_bg};">
                     {badge_icon}&nbsp;{active_data['Status']}
                 </span>
             </div>
@@ -892,42 +991,62 @@ elif st.session_state.page == "log":
         with pl:
             _sa = active_data['SkorAman']
             if _sa >= 75:
-                _card_color = "#3B5BDB"; _card_bg = "#F8FAFF"; _card_border = "#c5d0fa"; _card_label = "AMAN · Retensi Tinggi"
+                cc="#3B5BDB"; cb="#F8FAFF"; cbo="#c5d0fa"; cl="AMAN · Retensi Tinggi"
             elif _sa >= 40:
-                _card_color = "#D97706"; _card_bg = "#FFFBEB"; _card_border = "#FDE68A"; _card_label = "WASPADA · Risiko Sedang"
+                cc="#D97706"; cb="#FFFBEB"; cbo="#FDE68A"; cl="WASPADA · Risiko Sedang"
             else:
-                _card_color = "#DC2626"; _card_bg = "#FFF5F5"; _card_border = "#fecaca"; _card_label = "DROPOUT · Risiko Tinggi"
+                cc="#DC2626"; cb="#FFF5F5"; cbo="#fecaca"; cl="DROPOUT · Risiko Tinggi"
             st.markdown(f"""
                 <div style="display:flex;flex-direction:column;gap:12px;">
-                    <div style="background:{_card_bg};border:1.5px solid {_card_border};border-radius:14px;padding:16px 18px;">
-                        <div style="font-family:'Fira Code',monospace;font-size:9.5px;color:{_card_color};text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;">Persentase Kelulusan</div>
-                        <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:{_card_color};line-height:1;">{active_data['SkorAman']}%</div>
-                        <div style="font-family:'Fira Code',monospace;font-size:9px;color:{_card_color};margin-top:5px;opacity:0.8;">{_card_label}</div>
+                    <div style="background:{cb};border:1.5px solid {cbo};border-radius:14px;padding:16px 18px;">
+                        <div style="font-family:'Fira Code',monospace;font-size:9.5px;color:{cc};
+                                    text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;">Peluang Lulus</div>
+                        <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:{cc};line-height:1;">
+                            {active_data['SkorAman']}%
+                        </div>
+                        <div style="font-family:'Fira Code',monospace;font-size:9px;color:{cc};margin-top:5px;opacity:0.8;">{cl}</div>
                     </div>
                     <div style="background:#FFF5F5;border:1.5px solid #fecaca;border-radius:14px;padding:16px 18px;">
-                        <div style="font-family:'Fira Code',monospace;font-size:9.5px;color:#DC2626;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;">Faktor Risiko Dropout</div>
-                        <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:#DC2626;line-height:1;">{active_data['SkorRisiko']}%</div>
+                        <div style="font-family:'Fira Code',monospace;font-size:9.5px;color:#DC2626;
+                                    text-transform:uppercase;letter-spacing:0.7px;margin-bottom:4px;">Faktor Risiko Dropout</div>
+                        <div style="font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:#DC2626;line-height:1;">
+                            {active_data['SkorRisiko']}%
+                        </div>
                     </div>
                 </div>
             """, unsafe_allow_html=True)
+
         with pm:
-            st.markdown(f'<div style="font-family:\'Fira Code\',monospace;font-size:11.5px;font-weight:600;color:#0D1117;margin-bottom:8px;">{BARCHART_ICON.format(size=13,color="#3B5BDB")} &nbsp;Fluktuasi IPK per Semester</div>',
-                        unsafe_allow_html=True)
-            st.line_chart(pd.DataFrame({"IPK":[active_data["IPK1"],active_data["IPK2"]]},
-                          index=["Semester 1","Semester 2"]), height=165, use_container_width=True)
+            st.markdown(
+                f'<div style="font-family:\'Fira Code\',monospace;font-size:11.5px;font-weight:600;'
+                f'color:#0D1117;margin-bottom:8px;">'
+                f'{BARCHART_ICON.format(size=13,color="#3B5BDB")} &nbsp;Fluktuasi IPK per Semester</div>',
+                unsafe_allow_html=True)
+            st.line_chart(
+                pd.DataFrame({"IPK":[active_data["IPK1"],active_data["IPK2"]]},
+                             index=["Semester 1","Semester 2"]),
+                height=165, use_container_width=True)
+
         with pr:
-            st.markdown(f'<div style="font-family:\'Fira Code\',monospace;font-size:11.5px;font-weight:600;color:#0D1117;margin-bottom:8px;">{BARCHART_ICON.format(size=13,color="#7048E8")} &nbsp;Volume SKS per Semester</div>',
-                        unsafe_allow_html=True)
-            st.bar_chart(pd.DataFrame({"Volume SKS":[active_data["SKS1"],active_data["SKS2"]]},
-                         index=["Semester 1","Semester 2"]), height=165, use_container_width=True)
+            st.markdown(
+                f'<div style="font-family:\'Fira Code\',monospace;font-size:11.5px;font-weight:600;'
+                f'color:#0D1117;margin-bottom:8px;">'
+                f'{BARCHART_ICON.format(size=13,color="#7048E8")} &nbsp;Volume SKS per Semester</div>',
+                unsafe_allow_html=True)
+            st.bar_chart(
+                pd.DataFrame({"Volume SKS":[active_data["SKS1"],active_data["SKS2"]]},
+                             index=["Semester 1","Semester 2"]),
+                height=165, use_container_width=True)
 
     st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
 
     fa, fb = st.columns([1,1], gap="large")
     with fa:
         with st.container(border=True):
-            st.markdown(f'<div class="section-label">{ZAPPER_ICON.format(size=13,color="#3B5BDB")} Indikator Faktor Keputusan Model</div>',
-                        unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="section-label">'
+                f'{ZAPPER_ICON.format(size=13,color="#3B5BDB")} Indikator Faktor Keputusan Model</div>',
+                unsafe_allow_html=True)
             scores = factor_score(active_data)
             for label, score in scores.items():
                 bar_color = "#0D9488" if score>=70 else "#D97706" if score>=40 else "#DC2626"
@@ -935,18 +1054,23 @@ elif st.session_state.page == "log":
                 st.markdown(f"""
                     <div style="margin-bottom:14px;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                            <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:600;color:#0D1117;">{label}</span>
-                            <span style="font-family:'Fira Code',monospace;font-size:12px;font-weight:600;color:{bar_color};background:{txt_bg};padding:2px 10px;border-radius:20px;">{score}%</span>
+                            <span style="font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+                                         font-weight:600;color:#0D1117;">{label}</span>
+                            <span style="font-family:'Fira Code',monospace;font-size:12px;font-weight:600;
+                                         color:{bar_color};background:{txt_bg};padding:2px 10px;border-radius:20px;">{score}%</span>
                         </div>
                         <div style="width:100%;height:8px;background:#F1F5F9;border-radius:99px;overflow:hidden;">
                             <div style="width:{score}%;height:100%;background:{bar_color};border-radius:99px;"></div>
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
+
     with fb:
         with st.container(border=True):
-            st.markdown(f'<div class="section-label">{BULB_ICON.format(size=13,color="#3B5BDB")} Rekomendasi Intervensi Akademik</div>',
-                        unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="section-label">'
+                f'{BULB_ICON.format(size=13,color="#3B5BDB")} Rekomendasi Intervensi Akademik</div>',
+                unsafe_allow_html=True)
             recs = generate_recommendations(active_data)
             level_colors = {
                 "KRITIS":  ("DC2626","FEE2E2","FECACA"),
@@ -954,13 +1078,19 @@ elif st.session_state.page == "log":
                 "BAIK":    ("0D9488","CCFBF1","99F6E4"),
             }
             for rec in recs:
-                fg, bg, border = level_colors.get(rec["level"],("3B5BDB","EEF2FF","C5D0FA"))
+                fg, bg, border = level_colors.get(rec["level"], ("3B5BDB","EEF2FF","C5D0FA"))
                 st.markdown(f"""
-                    <div style="display:flex;gap:14px;align-items:flex-start;background:#{bg};border:1.5px solid #{border};border-radius:14px;padding:14px 16px;margin-bottom:12px;">
-                        <div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:4px 10px;color:#{fg};font-family:'Fira Code',monospace;font-weight:700;font-size:9px;white-space:nowrap;">{rec['level']}</div>
+                    <div style="display:flex;gap:14px;align-items:flex-start;background:#{bg};
+                                border:1.5px solid #{border};border-radius:14px;padding:14px 16px;margin-bottom:12px;">
+                        <div style="background:rgba(255,255,255,0.7);border-radius:8px;padding:4px 10px;
+                                    color:#{fg};font-family:'Fira Code',monospace;font-weight:700;font-size:9px;white-space:nowrap;">
+                            {rec['level']}
+                        </div>
                         <div>
-                            <div style="font-family:'Space Grotesk',sans-serif;font-size:13.5px;font-weight:700;color:#0D1117;margin-bottom:3px;">{rec['title']}</div>
-                            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:#475569;line-height:1.55;">{rec['desc']}</div>
+                            <div style="font-family:'Space Grotesk',sans-serif;font-size:13.5px;
+                                        font-weight:700;color:#0D1117;margin-bottom:3px;">{rec['title']}</div>
+                            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;
+                                        color:#475569;line-height:1.55;">{rec['desc']}</div>
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
@@ -969,15 +1099,20 @@ elif st.session_state.page == "log":
     st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
     with st.container(border=True):
         st.markdown(f"""
-            <div style="display:flex;align-items:center;gap:16px;padding:6px 4px 14px 4px;border-bottom:1.5px solid #F1F5F9;margin-bottom:18px;">
-                <div style="width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#EEF2FF,#F3F0FF);
-                            border:1.5px solid #c5d0fa;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:16px;
+                        padding:6px 4px 14px 4px;border-bottom:1.5px solid #F1F5F9;margin-bottom:18px;">
+                <div style="width:44px;height:44px;border-radius:13px;
+                            background:linear-gradient(135deg,#EEF2FF,#F3F0FF);
+                            border:1.5px solid #c5d0fa;
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     {DOWNLOAD_ICON.format(size=20, color="#3B5BDB")}
                 </div>
                 <div>
-                    <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#0D1117;">Ekspor Laporan Lengkap</div>
+                    <div style="font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:700;color:#0D1117;">
+                        Ekspor Laporan Lengkap
+                    </div>
                     <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:#94A3B8;">
-                        Laporan berisi identitas, data semester, semua grafik, faktor risiko &amp; rekomendasi intervensi.
+                        Berisi identitas, data semester, semua grafik, faktor risiko &amp; rekomendasi intervensi.
                     </div>
                 </div>
             </div>
@@ -985,16 +1120,21 @@ elif st.session_state.page == "log":
 
         html_report = generate_html_report(active_data)
         st.markdown(f"""
-            <div style="background:#EEF2FF;border:1.5px solid #C5D0FA;border-radius:14px;padding:16px 18px;margin-bottom:10px;">
+            <div style="background:#EEF2FF;border:1.5px solid #C5D0FA;border-radius:14px;
+                        padding:16px 18px;margin-bottom:10px;">
                 <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
                     {PRINT_ICON.format(size=18, color="#3B5BDB")}
-                    <span style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:#0D1117;">Cetak / PDF</span>
+                    <span style="font-family:'Space Grotesk',sans-serif;font-size:13px;
+                                 font-weight:700;color:#0D1117;">Cetak / PDF</span>
                 </div>
-                <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;color:#64748B;line-height:1.5;">
-                    Buka laporan HTML interaktif di tab baru. Klik tombol <b>Cetak / Simpan PDF</b> untuk print atau save as PDF langsung dari browser.
+                <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:11.5px;
+                            color:#64748B;line-height:1.5;">
+                    Buka laporan HTML interaktif di tab baru. Klik tombol
+                    <b>Cetak / Simpan PDF</b> untuk print atau save as PDF langsung dari browser.
                 </div>
             </div>
         """, unsafe_allow_html=True)
+
         st.download_button(
             label="🖨 Buka Laporan untuk Print/PDF",
             data=html_report.encode("utf-8"),
@@ -1006,3 +1146,4 @@ elif st.session_state.page == "log":
         st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
         if st.button("Evaluasi Mahasiswa Baru", use_container_width=True, key="back_btn"):
             switch_page("input")
+ENDOFFILE

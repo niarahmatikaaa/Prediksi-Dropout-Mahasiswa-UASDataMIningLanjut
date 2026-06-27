@@ -494,8 +494,9 @@ with st.sidebar:
 if st.button(
     "",
     use_container_width=True,
-    key="nav_log_active" if _active_log else "nav_log"
+    key="nav_input"
 ):
+    switch_page("input")
     switch_page("log")
 
     # Tombol Log Aktivitas (hanya jika ada data)

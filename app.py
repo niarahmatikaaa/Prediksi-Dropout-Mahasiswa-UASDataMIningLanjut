@@ -491,13 +491,14 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
+_active_input = st.session_state.page == "input"
+
 if st.button(
     "",
     use_container_width=True,
-    key="nav_input"
+    key="nav_input_active" if _active_input else "nav_input"
 ):
     switch_page("input")
-    switch_page("log")
 
     # Tombol Log Aktivitas (hanya jika ada data)
     if len(st.session_state.history) > 0:
@@ -527,6 +528,9 @@ if st.button(
             </div>
         </div>
         """, unsafe_allow_html=True)
+# Tombol Log Aktivitas
+_active_log = st.session_state.page == "log"
+
 if st.button(
     "",
     use_container_width=True,

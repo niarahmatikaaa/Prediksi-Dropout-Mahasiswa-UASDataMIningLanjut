@@ -1146,4 +1146,3 @@ elif st.session_state.page == "log":
         st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
         if st.button("Evaluasi Mahasiswa Baru", use_container_width=True, key="back_btn"):
             switch_page("input")
-ENDOFFILE

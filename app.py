@@ -46,16 +46,34 @@ CLOSE_ICON     = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill
 # ==========================================
 st.markdown("""
 <style>
-            /* HIDE PRESS ENTER TO SUBMIT */
+
+/* =========================
+HIDE "PRESS ENTER TO SUBMIT"
+========================= */
 div[data-testid="InputInstructions"]{
     display:none !important;
+    visibility:hidden !important;
+    height:0 !important;
+    margin:0 !important;
+    padding:0 !important;
 }
 
 /* FIX NUMBER INPUT */
-[data-testid="stNumberInput"] button{
+div[data-testid="stNumberInput"] input{
+    padding-top:14px !important;
+    padding-bottom:14px !important;
+}
+
+div[data-testid="stTextInput"] input{
+    padding-top:14px !important;
+    padding-bottom:14px !important;
+}
+
+/* BUTTON PLUS MINUS */
+div[data-testid="stNumberInput"] button{
+    height:42px !important;
     min-height:42px !important;
 }
-            
 
 /* ROOT */
 :root{
@@ -64,16 +82,6 @@ div[data-testid="InputInstructions"]{
     --card:#ffffff;
     --input:#ffffff;
     --border:#d1d5db;
-}
-
-@media (prefers-color-scheme: dark){
-    :root{
-        --bg:#0e1117;
-        --text:#f9fafb;
-        --card:#111827;
-        --input:#1f2937;
-        --border:#374151;
-    }
 }
 
 /* APP */
@@ -96,12 +104,6 @@ div[data-testid="InputInstructions"]{
     border-radius:12px !important;
 }
 
-/* PLACEHOLDER */
-.stTextInput input::placeholder,
-.stNumberInput input::placeholder{
-    color:#9ca3af!important;
-}
-
 /* SELECT */
 div[data-baseweb="select"] > div{
     background:var(--input)!important;
@@ -114,15 +116,11 @@ label, p, h1, h2, h3, h4, h5, h6, span{
     color:var(--text)!important;
 }
 
-/* BUTTON */
-.stButton button{
-    width:100%;
-    border-radius:12px;
-}
-
-/* CHART WHITE BG */
-canvas{
-    background:#ffffff !important;
+/* SIDEBAR BUTTON HIDE TEXT */
+section[data-testid="stSidebar"] .stButton button{
+    margin-top:-48px !important;
+    opacity:0 !important;
+    height:48px !important;
 }
 
 /* MOBILE */
@@ -468,10 +466,6 @@ with st.sidebar:
             </div>
         </div>
 
-        <div style="font-family:'Fira Code',monospace;font-size:9px;font-weight:600;color:#94A3B8;
-                    text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">
-            Navigasi
-        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -497,9 +491,12 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
-    if st.button("Form Input Parameter", use_container_width=True,
-                 key="nav_input_active" if _active_input else "nav_input"):
-        switch_page("input")
+if st.button(
+    "",
+    use_container_width=True,
+    key="nav_log_active" if _active_log else "nav_log"
+):
+    switch_page("log")
 
     # Tombol Log Aktivitas (hanya jika ada data)
     if len(st.session_state.history) > 0:
@@ -529,9 +526,12 @@ with st.sidebar:
             </div>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Log Aktivitas Global", use_container_width=True,
-                     key="nav_log_active" if _active_log else "nav_log"):
-            switch_page("log")
+if st.button(
+    "",
+    use_container_width=True,
+    key="nav_log_active" if _active_log else "nav_log"
+):
+    switch_page("log")
 
     # Divider & Info user
     st.markdown(f"""

@@ -16,9 +16,8 @@ from docx.oxml import OxmlElement
 # 1. KONFIGURASI HALAMAN
 # ==========================================
 st.set_page_config(
-    page_title="Portal Evaluasi Studi Akademik",
-    layout="wide",
-    initial_sidebar_state="collapsed"
+    page_title="Portal Akademik",
+    layout="wide"
 )
 
 # ==========================================
@@ -46,308 +45,108 @@ CLOSE_ICON     = """<svg width="{size}" height="{size}" viewBox="0 0 24 24" fill
 # ==========================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
 
-/* ══════════════════════════════════════════
-   FORCE LIGHT MODE — override dark/auto theme
-   tulisan, input, background semuanya eksplisit
-   ══════════════════════════════════════════ */
+/* ===== ROOT COLOR AUTO ADAPT ===== */
 :root {
-    color-scheme: light only !important;
-    --ink:#0D1117;
-    --ink-2:#1C2333;
-    --muted:#64748B;
-    --muted-2:#94A3B8;
-    --paper:#F0F4FA;
-    --surface:#FFFFFF;
-    --blue:#3B5BDB;
-    --blue-dark:#2F4AC0;
-    --blue-bg:#EEF2FF;
-    --violet:#7048E8;
-    --violet-bg:#F3F0FF;
-    --safe:#0D9488;
-    --safe-bg:#CCFBF1;
-    --risk:#DC2626;
-    --risk-bg:#FEE2E2;
-    --amber:#D97706;
-    --amber-bg:#FEF3C7;
-    --hairline:#E2E8F0;
-    --font-head:'Space Grotesk',sans-serif;
-    --font-body:'Plus Jakarta Sans',sans-serif;
-    --font-code:'Fira Code',monospace;
+    --bg-light: #ffffff;
+    --bg-dark: #0E1117;
+    --text-light: #111827;
+    --text-dark: #F9FAFB;
+    --input-light: #ffffff;
+    --input-dark: #1F2937;
+    --border-light: #D1D5DB;
+    --border-dark: #374151;
 }
 
-/* Force light background & dark text globally */
-html, body, [class*="css"], .stApp, .main, [data-testid="stAppViewContainer"] {
-    background-color: #F0F4FA !important;
-    color: #0D1117 !important;
-    color-scheme: light !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    -webkit-font-smoothing: antialiased !important;
+/* ===== APP BACKGROUND ===== */
+.stApp {
+    background-color: var(--bg-light);
+    color: var(--text-light);
 }
 
-/* ── SIDEBAR MENU STYLING ── */
-[data-testid="stSidebar"] {
-    background-color: #FFFFFF !important;
-    border-right: 1.5px solid #E2E8F0 !important;
+/* DARK MODE SUPPORT */
+@media (prefers-color-scheme: dark) {
+    .stApp {
+        background-color: var(--bg-dark);
+        color: var(--text-dark);
+    }
+}
+
+/* ===== INPUT FIELD FIX ===== */
+input, textarea {
+    color: inherit !important;
+    background: inherit !important;
+}
+
+.stTextInput input,
+.stNumberInput input {
+    color: #111827 !important;
+    background-color: #ffffff !important;
+    border: 2px solid #D1D5DB !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    .stTextInput input,
+    .stNumberInput input {
+        color: #F9FAFB !important;
+        background-color: #1F2937 !important;
+        border: 2px solid #374151 !important;
+    }
+}
+
+/* Placeholder */
+.stTextInput input::placeholder,
+.stNumberInput input::placeholder {
+    color: #9CA3AF !important;
+}
+
+/* ===== SELECTBOX ===== */
+.stSelectbox div[data-baseweb="select"] {
+    color: inherit !important;
+}
+
+/* ===== SIDEBAR FIX ===== */
+section[data-testid="stSidebar"] {
+    width: 280px !important;
     min-width: 280px !important;
-    max-width: 280px !important;
-}
-[data-testid="stSidebar"] * {
-    color: #0D1117 !important;
-}
-[data-testid="stSidebarNav"] { display: none !important; }
-
-/* Sidebar toggle button */
-[data-testid="collapsedControl"] {
-    background: linear-gradient(135deg, #3B5BDB, #7048E8) !important;
-    border-radius: 10px !important;
-    border: none !important;
-    color: #fff !important;
-    box-shadow: 0 4px 14px rgba(59,91,219,0.3) !important;
-}
-[data-testid="collapsedControl"] svg {
-    stroke: #fff !important;
-    fill: #fff !important;
 }
 
-/* ── TOPBAR ── */
-.st-key-topbar {
-    position: fixed !important;
-    top: 0; left: 0; right: 0;
-    z-index: 99999;
-    background: rgba(255,255,255,0.97) !important;
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-bottom: 1.5px solid #E2E8F0 !important;
-    box-shadow: 0 1px 16px rgba(15,23,42,0.06) !important;
-    padding: 10px 2.4rem !important;
-}
-
-header[data-testid="stHeader"] { height:0; visibility:hidden; }
-div[data-testid="stDecoration"] { display:none; }
-footer { visibility:hidden; }
-#MainMenu { visibility:hidden; }
-
-.block-container {
-    padding-top: 1rem !important;
-    padding-bottom: 3rem !important;
-    padding-left: 2.4rem !important;
-    padding-right: 2.4rem !important;
+/* Content geser biar gak ketiban sidebar */
+.main .block-container {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
     max-width: 100% !important;
 }
-@media(max-width: 768px) {
-    .block-container {
+
+/* ===== MENU RESPONSIVE ===== */
+@media (max-width: 768px) {
+    section[data-testid="stSidebar"] {
+        width: 100% !important;
+    }
+
+    .main .block-container {
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }
 }
 
-/* ── SECTION LABEL ── */
-.section-label {
-    font-family: 'Fira Code', monospace !important;
-    font-size: 10.5px;
-    font-weight: 600;
-    color: #3B5BDB;
-    text-transform: uppercase;
-    letter-spacing: 1.4px;
-    border-left: 3px solid #3B5BDB;
-    padding-left: 10px;
-    margin: 4px 0 18px 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+/* ===== CHART TEXT FIX ===== */
+svg text {
+    fill: currentColor !important;
 }
 
-/* ── CARD BORDER ── */
-div[data-testid="stVerticalBlockBorderWrapper"] {
-    background: #ffffff !important;
-    border-radius: 20px !important;
-    border: 1.5px solid #E2E8F0 !important;
-    box-shadow: 0 2px 16px rgba(15,23,42,0.05) !important;
+/* ===== BUTTON ===== */
+.stButton button {
+    width: 100%;
+    border-radius: 12px;
+    font-weight: bold;
 }
 
-/* ══════════════════════════════════════════
-   INPUT — FORCE warna teks & background
-   agar tidak ikut dark mode browser/OS
-   ══════════════════════════════════════════ */
-.stTextInput input,
-.stNumberInput input,
-input[type="text"],
-input[type="number"],
-input[type="password"] {
-    color: #0D1117 !important;
-    background-color: #F8FAFC !important;
-    border: 1.5px solid #E2E8F0 !important;
-    border-radius: 10px !important;
-    padding: 10px 14px !important;
-    font-size: 14px !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    caret-color: #0D1117 !important;
-    -webkit-text-fill-color: #0D1117 !important;
-}
-.stTextInput input:focus,
-.stNumberInput input:focus {
-    border-color: #3B5BDB !important;
-    box-shadow: 0 0 0 3px rgba(59,91,219,0.10) !important;
-    background-color: #ffffff !important;
-    -webkit-text-fill-color: #0D1117 !important;
-}
-.stTextInput input::placeholder,
-.stNumberInput input::placeholder {
-    color: #94A3B8 !important;
-    -webkit-text-fill-color: #94A3B8 !important;
-    opacity: 1 !important;
-}
-/* Label input */
-.stTextInput label,
-.stNumberInput label,
-.stSelectbox label,
-label {
-    color: #0D1117 !important;
-    font-size: 13px !important;
-    font-weight: 600 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
+/* ===== REMOVE LEFT EMPTY SPACE BUG ===== */
+[data-testid="collapsedControl"] {
+    display: block !important;
 }
 
-/* Selectbox */
-.stSelectbox div[data-baseweb="select"] > div {
-    border-radius: 10px !important;
-    border: 1.5px solid #E2E8F0 !important;
-    min-height: 42px !important;
-    background-color: #F8FAFC !important;
-    color: #0D1117 !important;
-}
-.stSelectbox [data-testid="stMarkdownContainer"] p { color: #0D1117 !important; }
-
-/* Sembunyikan "Press Enter to submit" */
-[data-testid="InputInstructions"] {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-}
-
-/* ── BUTTONS PRIMARY ── */
-.stButton button[kind="primary"],
-.stFormSubmitButton button[kind="primary"] {
-    background: linear-gradient(135deg, #3B5BDB 0%, #7048E8 100%) !important;
-    border: none !important;
-    border-radius: 50px !important;
-    font-weight: 700 !important;
-    font-size: 14px !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-    padding: 10px 0 !important;
-    box-shadow: 0 3px 14px rgba(59,91,219,0.28) !important;
-    transition: opacity .18s !important;
-}
-.stButton button[kind="primary"]:hover,
-.stFormSubmitButton button[kind="primary"]:hover { opacity: .88 !important; }
-
-/* ── BUTTON SECONDARY ── */
-.stButton button[kind="secondary"] {
-    border-radius: 50px !important;
-    border: 1.5px solid #E2E8F0 !important;
-    color: #0D1117 !important;
-    -webkit-text-fill-color: #0D1117 !important;
-    font-weight: 600 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    background: #ffffff !important;
-    transition: border-color .18s, color .18s;
-}
-.stButton button[kind="secondary"]:hover {
-    border-color: #3B5BDB !important;
-    color: #3B5BDB !important;
-    -webkit-text-fill-color: #3B5BDB !important;
-}
-
-/* ── DOWNLOAD BUTTON ── */
-.stDownloadButton button {
-    border-radius: 50px !important;
-    font-weight: 600 !important;
-    font-family: 'Plus Jakarta Sans', sans-serif !important;
-    border: 1.5px solid #E2E8F0 !important;
-    background: #ffffff !important;
-    color: #0D1117 !important;
-    -webkit-text-fill-color: #0D1117 !important;
-    transition: all .18s;
-}
-.stDownloadButton button:hover {
-    border-color: #3B5BDB !important;
-    color: #3B5BDB !important;
-    -webkit-text-fill-color: #3B5BDB !important;
-}
-
-/* ── BACK BUTTON ── */
-.st-key-back_btn button {
-    background: linear-gradient(135deg, #3B5BDB 0%, #7048E8 100%) !important;
-    border: none !important;
-    border-radius: 50px !important;
-    color: #ffffff !important;
-    -webkit-text-fill-color: #ffffff !important;
-    font-weight: 700 !important;
-    font-size: 14px !important;
-    padding: 10px 0 !important;
-    box-shadow: 0 3px 14px rgba(59,91,219,0.30) !important;
-    transition: opacity .18s !important;
-}
-.st-key-back_btn button:hover { opacity: .88 !important; }
-
-/* ── METRICS ── */
-div[data-testid="stMetric"] {
-    background: #ffffff !important;
-    border: 1.5px solid #E2E8F0 !important;
-    border-radius: 16px !important;
-    padding: 18px 20px !important;
-}
-div[data-testid="stMetricLabel"] p {
-    font-family: 'Fira Code', monospace !important;
-    font-size: 10px !important;
-    letter-spacing: 0.8px;
-    color: #64748B !important;
-    text-transform: uppercase;
-}
-div[data-testid="stMetricValue"] {
-    font-family: 'Space Grotesk', sans-serif !important;
-    font-size: 26px !important;
-    font-weight: 700 !important;
-    color: #0D1117 !important;
-}
-
-/* ── RADIO ── */
-.stRadio label { font-size: 13px !important; font-weight: 500 !important; color: #0D1117 !important; }
-
-/* ── DATAFRAME ── */
-div[data-testid="stDataFrame"] { border-radius: 14px; overflow: hidden; }
-
-/* ── SIDEBAR BUTTON STYLE ── */
-[data-testid="stSidebar"] .stButton button {
-    width: 100% !important;
-    text-align: left !important;
-    border-radius: 12px !important;
-    border: 1.5px solid #E2E8F0 !important;
-    background: #F8FAFC !important;
-    color: #0D1117 !important;
-    -webkit-text-fill-color: #0D1117 !important;
-    font-weight: 600 !important;
-    padding: 10px 14px !important;
-    margin-bottom: 6px !important;
-    transition: all .18s !important;
-}
-[data-testid="stSidebar"] .stButton button:hover {
-    border-color: #3B5BDB !important;
-    background: #EEF2FF !important;
-    color: #3B5BDB !important;
-    -webkit-text-fill-color: #3B5BDB !important;
-}
-[data-testid="stSidebar"] .st-key-nav_input_active button,
-[data-testid="stSidebar"] .st-key-nav_log_active button {
-    background: linear-gradient(135deg, #EEF2FF, #F3F0FF) !important;
-    border-color: #C5D0FA !important;
-    color: #3B5BDB !important;
-    -webkit-text-fill-color: #3B5BDB !important;
-}
 </style>
 """, unsafe_allow_html=True)
 

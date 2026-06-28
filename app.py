@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import (
     SimpleDocTemplate, Table, TableStyle, Paragraph,
-    Spacer, Image, HRFlowable
+    Spacer, Image, HRFlowable, KeepTogether
 )
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.lib import colors
@@ -142,7 +142,7 @@ def switch_page(p):
     st.rerun()
 
 # ==========================================
-# HELPER — Logika
+# HELPER
 # ==========================================
 def generate_recommendations(data):
     recs = []
@@ -268,12 +268,12 @@ class ProgressBar(Flowable):
         self.canv.restoreState()
 
 # ==========================================
-# PDF GENERATOR  — vertikal, 1 halaman rapi
+# PDF GENERATOR  — 1 halaman penuh, tidak terpotong
 # ==========================================
 def generate_pdf_bytes(active_data):
     buf = io.BytesIO()
-    W, H = A4           # 595.28 x 841.89 pt
-    M    = 9 * mm       # margin kiri/kanan
+    W, H = A4
+    M    = 9 * mm
 
     doc = SimpleDocTemplate(
         buf, pagesize=A4,
@@ -281,10 +281,8 @@ def generate_pdf_bytes(active_data):
         topMargin=M, bottomMargin=M
     )
 
-    # ── lebar konten tersedia ──
-    PW = W - 2 * M     # ≈ 577 pt  — SATU-SATUNYA ukuran dasar
+    PW = W - 2 * M
 
-    # ── warna ──
     C_BLUE   = colors.HexColor("#3B5BDB")
     C_VIOLET = colors.HexColor("#7048E8")
     C_SAFE   = colors.HexColor("#0D9488")
@@ -300,7 +298,6 @@ def generate_pdf_bytes(active_data):
     C_AMBBG  = colors.HexColor("#FEF3C7")
     C_BLUEBG = colors.HexColor("#EEF2FF")
 
-    # ── style helpers ──
     def st_(name, **kw):
         base = ParagraphStyle(name, fontName="Helvetica", fontSize=7.5,
                               leading=10, textColor=C_INK)
@@ -312,13 +309,11 @@ def generate_pdf_bytes(active_data):
     S_HDR_D = st_("hd", fontSize=6.5, textColor=colors.HexColor("#C5D0FA"), alignment=TA_RIGHT)
     S_SEC   = st_("sc", fontName="Helvetica-Bold", fontSize=7.5, textColor=C_BLUE, leading=10)
     S_LBL   = st_("lb", fontName="Helvetica-Bold", fontSize=5.5, textColor=C_MUTED, leading=7)
-    S_VAL   = st_("vl", fontName="Helvetica-Bold", fontSize=8.5, leading=11)
     S_TH    = st_("th", fontName="Helvetica-Bold", fontSize=7,   textColor=C_WHITE, leading=9)
     S_TD    = st_("td", fontName="Helvetica",      fontSize=7.5, textColor=C_INK,   leading=10)
     S_TDB   = st_("tb", fontName="Helvetica-Bold", fontSize=7.5, textColor=C_INK,   leading=10)
     S_CTIT  = st_("ct", fontName="Helvetica-Bold", fontSize=6,   textColor=C_BLUE,  alignment=TA_CENTER, leading=8)
     S_FOOT  = st_("ft", fontSize=6, textColor=C_MUTED, alignment=TA_CENTER)
-    S_RLV   = st_("rl", fontName="Helvetica-Bold", fontSize=6,   textColor=C_INK,   alignment=TA_CENTER, leading=8)
     S_RTT   = st_("rt", fontName="Helvetica-Bold", fontSize=7.5, textColor=C_INK,   leading=10)
     S_RDD   = st_("rd", fontSize=6.5, textColor=colors.HexColor("#475569"),          leading=9)
 
@@ -339,9 +334,9 @@ def generate_pdf_bytes(active_data):
 
     spp_c = C_SAFE if active_data["SPP"] == "Lancar" else C_RISK
     di = active_data["IPK2"] - active_data["IPK1"]
-    if di > 0:   it, ic = f"\u2191 Naik {abs(di):.2f} poin",   C_SAFE
-    elif di < 0: it, ic = f"\u2193 Turun {abs(di):.2f} poin",  C_RISK
-    else:        it, ic = "Stabil",                              C_MUTED
+    if di > 0:   it, ic = f"Naik {abs(di):.2f} poin",   C_SAFE
+    elif di < 0: it, ic = f"Turun {abs(di):.2f} poin",  C_RISK
+    else:        it, ic = "Stabil",                       C_MUTED
     ds = active_data["SKS2"] - active_data["SKS1"]
     if ds > 0:   st2, sc2 = "Bertambah", C_SAFE
     elif ds < 0: st2, sc2 = "Berkurang", C_AMBER
@@ -351,9 +346,7 @@ def generate_pdf_bytes(active_data):
     recs   = generate_recommendations(active_data)
     story  = []
 
-    # ────────────────────────────────────────────────
-    # HEADER  (full-width blue banner)
-    # ────────────────────────────────────────────────
+    # ── HEADER ──
     from reportlab.pdfbase.pdfmetrics import stringWidth
     LH = round(PW * 0.60)
     RH = PW - LH
@@ -393,9 +386,6 @@ def generate_pdf_bytes(active_data):
     story.append(hdr)
     story.append(Spacer(1, 2.5*mm))
 
-    # ────────────────────────────────────────────────
-    # helper: section title bar (full PW)
-    # ────────────────────────────────────────────────
     def sec(num, text):
         t = Table([[p(f"{num}  \u00b7  {text}", S_SEC)]], colWidths=[PW])
         t.setStyle(TableStyle([
@@ -405,9 +395,6 @@ def generate_pdf_bytes(active_data):
         ]))
         return t
 
-    # ────────────────────────────────────────────────
-    # helper: id card cell  (width = cell_w)
-    # ────────────────────────────────────────────────
     def id_cell(label, value, val_color=C_INK, cell_w=None):
         vs = ParagraphStyle("vs", fontName="Helvetica-Bold", fontSize=8.5,
                              textColor=val_color, leading=11)
@@ -421,11 +408,8 @@ def generate_pdf_bytes(active_data):
         t.cornerRadii = [8,8,8,8]
         return t
 
-    # ────────────────────────────────────────────────
-    # SECTION 1 — Identitas  (4 rows × 2 cols)
-    # ────────────────────────────────────────────────
-    GAP  = 3          # gutter between columns (pt)
-    CW2  = round((PW - GAP) / 2)   # each half-width cell
+    GAP  = 3
+    CW2  = round((PW - GAP) / 2)
 
     def id_row_2(la, va, ca, lb, vb, cb):
         return Table([[id_cell(la, va, ca, CW2), id_cell(lb, vb, cb, CW2)]],
@@ -444,8 +428,7 @@ def generate_pdf_bytes(active_data):
     for t in id_grid:
         zpad(t)
 
-    id_stack = Table([[r] for r in id_grid] + [[Spacer(1, 1.5*mm)]] * 0,
-                     colWidths=[PW])
+    id_stack = Table([[r] for r in id_grid], colWidths=[PW])
     id_stack.setStyle(TableStyle([
         ("LEFTPADDING",(0,0),(-1,-1),0), ("RIGHTPADDING",(0,0),(-1,-1),0),
         ("TOPPADDING",(0,0),(-1,-1),1),  ("BOTTOMPADDING",(0,0),(-1,-1),1),
@@ -456,9 +439,7 @@ def generate_pdf_bytes(active_data):
     story.append(id_stack)
     story.append(Spacer(1, 2.5*mm))
 
-    # ────────────────────────────────────────────────
-    # SECTION 2 — Data Semester
-    # ────────────────────────────────────────────────
+    # ── SECTION 2 ──
     def cv(c): return ParagraphStyle("cv", fontName="Helvetica-Bold", fontSize=7.5, textColor=c, leading=10)
 
     c1 = round(PW*0.38); c2 = round(PW*0.18); c3 = round(PW*0.18); c4 = PW - c1 - c2 - c3
@@ -488,15 +469,13 @@ def generate_pdf_bytes(active_data):
     story.append(sem)
     story.append(Spacer(1, 2.5*mm))
 
-    # ────────────────────────────────────────────────
-    # SECTION 3 — Visualisasi & Grafik  (2×2 grid)
-    # ────────────────────────────────────────────────
-    CG  = 4                         # gutter antara chart (pt)
-    CCW = round((PW - CG) / 2)     # lebar tiap chart cell
-    CCH = round(CCW * 0.52)        # tinggi image di dalam cell
+    # ── SECTION 3 — Grafik ──
+    CG  = 4
+    CCW = round((PW - CG) / 2)
 
     def chart_cell(title, buf):
-        img = Image(buf, width=CCW - 8, height=(CCW - 8) * 0.52)
+        # FIX: rasio tinggi dikurangi dari 0.52 -> 0.48 agar ada ruang untuk Section 4 & 5
+        img = Image(buf, width=CCW - 8, height=(CCW - 8) * 0.48)
         t = Table([[p(title, S_CTIT)], [img]], colWidths=[CCW])
         t.setStyle(TableStyle([
             ("BACKGROUND",(0,0),(-1,-1), C_BG),
@@ -526,16 +505,14 @@ def generate_pdf_bytes(active_data):
     ))
     story.append(Spacer(1, 2*mm))
     story.append(chart_row(
-        chart_cell("SKOR RISIKO VS KELULUSAN",      risk_b),
+        chart_cell("SKOR RISIKO VS KELULUSAN",         risk_b),
         chart_cell("INDIKATOR FAKTOR KEPUTUSAN MODEL", fact_b)
     ))
     story.append(Spacer(1, 2.5*mm))
 
-    # ────────────────────────────────────────────────
-    # SECTION 4 — Faktor Keputusan (progress bars)
-    # ────────────────────────────────────────────────
-    P4 = 10    # card inner padding
-    IW = PW - 2 * P4
+    # ── SECTION 4 — Faktor Skor ──
+    P4  = 10
+    IW  = PW - 2 * P4
     LW4 = round(IW * 0.30)
     BW4 = round(IW * 0.52)
     PW4 = IW - LW4 - BW4
@@ -545,7 +522,6 @@ def generate_pdf_bytes(active_data):
         if score >= 70:   bc = colors.HexColor("#0D9488")
         elif score >= 40: bc = colors.HexColor("#D97706")
         else:             bc = colors.HexColor("#DC2626")
-        txtbg = "#CCFBF1" if score>=70 else "#FEF3C7" if score>=40 else "#FEE2E2"
         s_l = ParagraphStyle("sl", fontName="Helvetica-Bold", fontSize=7, textColor=C_INK)
         s_p = ParagraphStyle("sp", fontName="Helvetica-Bold", fontSize=7, textColor=bc, alignment=TA_RIGHT)
         pb  = ProgressBar(score, BW4)
@@ -564,17 +540,20 @@ def generate_pdf_bytes(active_data):
         ("BOX",(0,0),(-1,-1),0.5, C_HAIR),
         ("LEFTPADDING",(0,0),(-1,-1),P4), ("RIGHTPADDING",(0,0),(-1,-1),P4),
         ("TOPPADDING",(0,0),(-1,-1),1),   ("BOTTOMPADDING",(0,0),(-1,-1),1),
+        # FIX: cegah tabel ini terpotong antar baris progress bar
+        ("NOSPLIT",(0,0),(-1,-1)),
     ]))
     f4_card.cornerRadii = [10,10,10,10]
 
-    story.append(sec("4", "INDIKATOR FAKTOR KEPUTUSAN MODEL"))
-    story.append(Spacer(1, 1.5*mm))
-    story.append(f4_card)
+    # FIX: KeepTogether memastikan judul section 4 dan isinya selalu satu blok
+    story.append(KeepTogether([
+        sec("4", "INDIKATOR FAKTOR KEPUTUSAN MODEL"),
+        Spacer(1, 1.5*mm),
+        f4_card,
+    ]))
     story.append(Spacer(1, 2.5*mm))
 
-    # ────────────────────────────────────────────────
-    # SECTION 5 — Rekomendasi
-    # ────────────────────────────────────────────────
+    # ── SECTION 5 — Rekomendasi ──
     level_map = {
         "KRITIS":  (colors.HexColor("#DC2626"), colors.HexColor("#FEE2E2"), colors.HexColor("#FECACA")),
         "WASPADA": (colors.HexColor("#D97706"), colors.HexColor("#FEF3C7"), colors.HexColor("#FDE68A")),
@@ -637,7 +616,6 @@ def generate_pdf_bytes(active_data):
         ]))
         story.append(rec_row)
 
-    # ── FOOTER ──
     story.append(Spacer(1, 2.5*mm))
     story.append(HRFlowable(width=PW, thickness=0.4, color=C_HAIR))
     story.append(Spacer(1, 1.5*mm))
